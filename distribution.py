@@ -3,3 +3,5 @@ class Distribution:
     pass
   def sample(self):
     pass
+  def __str__(self):
+    pass

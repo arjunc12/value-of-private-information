@@ -1,8 +1,9 @@
+import random
 class Population:
   def __init__(self, probability, distribution):
     self.probability = probability
     self.distribution = distribution
-    self.num_types = size(probability)
+    self.num_types = len(probability)
   def sample(self):
     p = random.random()
     priv_type = -1
@@ -13,8 +14,13 @@ class Population:
         priv_type = i
         break
 
-    value = distribution[i].sample
+    value = self.distribution[i].sample()
 
     return (priv_type, value)
+  def __str__(self):
+    string = ""
+    for i in range(self.num_types):
+      string += (str(self.distribution[i]) + ":\t" + str(self.probability[i]) + "\n")
+    return string
 
 
