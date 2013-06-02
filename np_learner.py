@@ -1,4 +1,5 @@
 from learner import *
+import random
 
 """
 This class describes a non-parametric distribution learning mechanism.
@@ -25,7 +26,7 @@ class NPLearner(Learner):
         self.max_cost = max_cost
         probability = [1.0 / num_types for i in range(num_type)]
         distribution = [NPDistribution() for i in range(num_type)]
-	self.population = Population(probability, distribution)
+        self.population = Population(probability, distribution)
 
 
     """
@@ -69,7 +70,8 @@ class NPLearner(Learner):
     returns: next offer to make
     """
     def make_offer(self):
-        raise NotImplementedError()
+        #raise NotImplementedError()
+        return random.uniform(self.min, self.max)
 
     """
     Returns the predicted population.
