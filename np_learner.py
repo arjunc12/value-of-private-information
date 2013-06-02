@@ -25,7 +25,7 @@ class NPLearner(Learner):
     def __init__(self, num_types, max_cost, min_cost=0):
         self.min_cost = min_cost
         self.max_cost = max_cost
-        self.probability = [1.0 / num_types for i in range(num_type)]
+        self.count = [1.0 for i in range(num_type)]
         self.distribution = [NPDistribution() for i in range(num_type)]
 
 
@@ -47,11 +47,12 @@ class NPLearner(Learner):
     offer: The offer that was reject by the last person
     """
     def update_reject(self, offer):
-        weights = [self.distribution[i].cdf(offer, self.max_cost) for i in xrange(len(distribution))]
+        weights = [self.count[i] * self.distribution[i].cdf(offer, self.max_cost) for i in xrange(len(distribution))]
         overall_sum = (float)(sum(weights))
         for i in xrange(len(distribution)):
             self.distribution[i].update(self.distribution[i].sample(offer, self.max_cost),
                                         weights[i] / overall_sum)
+            self.count[i] += weight[i] / overall_sum
 
 
     """
@@ -64,8 +65,9 @@ class NPLearner(Learner):
     offer: The offer that was accepted by the individual
     """
     def update_accept(self, priv_type, offer):
+	self.count[priv_type] += 1
 	dist = self.distribution[priv_type]
-        dist.update(dist.sample(self.min_cost, offer), 1)
+        dist.update(dist.sample(self.min_cost, offer), 1.0)
 
     """
     This makes a random offer drawn from a uniform distrbution
@@ -81,4 +83,6 @@ class NPLearner(Learner):
     Returns the predicted population.
     """
     def get_prediction(self):
-        return Population(self.probability, self.distribution)
+	norm = sum(self.count)
+	probability = [self.count[i] / norm for i in xrange(len(self.count))]
+        return Population(probability, self.distribution)
