@@ -1,4 +1,7 @@
+import random
+
 import numpy as np
+from scipy.integrate import cumtrapz
 from scipy.stats import gaussian_kde
 
 from distribution import Distribution
@@ -13,10 +16,8 @@ class NPDistribution(Distribution):
     Returns the probability mass between values a and b, a < b
     '''
     def cdf(self, a, b):
-        assert a <= b
+        return self.distribution.integrate_box_1d(a, b)
 
-        # get rid of this
-        return 0.5
 
     '''
     Include a Gaussian distribution centered at mu. 'weight' is in between
@@ -31,14 +32,17 @@ class NPDistribution(Distribution):
         else:
             self.possible_points.append((mu, weight))
 
-        # turn into an array for numpy's purposes
-        a = np.array(self.possible_points)
+        if self.possible_points != []:
+            # turn into an array for numpy's purposes
+            a = np.array(self.possible_points)
 
-        # want to keep if weight is greater than random number
-        mask = a[:, 1] > np.random.rand(len(possible_points))
-        sampled = a[:, 0][mask]
+            # want to keep if weight is greater than random number
+            mask = a[:, 1] > np.random.rand(len(possible_points))
+            sampled = a[:, 0][mask]
 
-        concatenated = np.concatenate(np.array(self.definite_points), sampled)
+            concatenated = np.concatenate(np.array(self.definite_points), sampled)
+        else:
+            concatenated = self.definite_points
 
         self.distribution = gaussian_kde(concatenated)
 
@@ -48,5 +52,15 @@ class NPDistribution(Distribution):
     def sample(self, a, b):
         assert a <= b
 
-        # get rid of this
-        return (a + b) / 2.0
+        lin = np.linspace(a, b, 100)
+
+        # integrate using the trapezoidal method, returns all intermediate sums
+        cumulated = cumtrapz(self.distribution(lin))
+
+        # normalize so the integral is equal to 1.0
+        cumulated *= 1.0 / cumulated[-1]
+
+        rand_val = random.random()
+
+        index = np.nonzero(cumulated > rand_val)[0]
+        return lin[index]
