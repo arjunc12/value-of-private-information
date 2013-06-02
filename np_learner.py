@@ -59,7 +59,7 @@ class NPLearner(Learner):
     offer: The offer that was accepted by the individual
     """
     def update_accept(self, priv_type, offer):
-	self.distribution[priv_type].update((self.distribution[priv_type].sample(min_cost, offer), 1))
+        self.distribution[priv_type].update((self.distribution[priv_type].sample(min_cost, offer), 1))
 
     """
     This makes a random offer drawn from a uniform distrbution
