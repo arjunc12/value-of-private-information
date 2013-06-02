@@ -66,8 +66,7 @@ class Driver(object):
 
             individuals_seen += 1
 
-        return (learner, spent, individuals_seen)
-
+        return (learner.get_prediction(), spent, individuals_seen)
 
     def run_steps_constraint(self):
         steps = self.constraint_val
@@ -84,4 +83,4 @@ class Driver(object):
             else:
                 learner.update(OFFER_REJECTED, offer)
 
-        return (learner, spent, steps)
+        return (learner.get_prediction(), spent, steps)
