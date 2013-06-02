@@ -12,7 +12,6 @@ def main():
     probability = [0.9, 0.1] # Probability that each private type appears
     # Distribution of cost distributions for each private type
     distribution = [NormalDistribution(1, 0.5), UniformDistribution(9, 10)]
-    #                                                                 mu sigma                                    start end
     population = Population(probability, distribution) # Initialize the population
 
     total_payout = 0 # Total payout made by the mechanism (sum of accepted offers)

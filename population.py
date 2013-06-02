@@ -6,7 +6,7 @@ has a distribution for its cost function.
 
 import random
 
-class Population:
+class Population(object):
     """
     probability: list of floating point numbers that sum (approximately) to 1
                              represent the probability that each private type appears
