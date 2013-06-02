@@ -1,3 +1,4 @@
+from learner import OFFER_REJECTED
 from population import Population
 
 COST = 0
@@ -29,11 +30,11 @@ class Driver(object):
     def __init__(self,
                  population_distribution,
                  constraint_type,
-                 constaint_val,
+                 constraint_val,
                  learner):
 
         # initialize population
-        self.population = Population(zip(*population_distribution))
+        self.population = Population(*zip(*population_distribution))
 
         self.constraint_type = constraint_type
         self.constraint_val = constraint_val
@@ -54,19 +55,19 @@ class Driver(object):
 
         while spent < budget:
             # sample an individual from the population
-            (priv_type, cost) = population.sample()
+            (priv_type, cost) = self.population.sample()
 
-            offer = learner.make_offer()
+            offer = self.learner.make_offer()
 
             if offer >= cost:
                 spent += offer
-                learner.update(priv_type, offer)
+                self.learner.update(priv_type, offer)
             else:
-                learner.update(OFFER_REJECTED, offer)
+                self.learner.update(OFFER_REJECTED, offer)
 
             individuals_seen += 1
 
-        return (learner.get_prediction(), spent, individuals_seen)
+        return (self.learner.get_prediction(), spent, individuals_seen)
 
     def run_steps_constraint(self):
         steps = self.constraint_val
@@ -74,13 +75,13 @@ class Driver(object):
 
         for _ in xrange(steps):
             # sample an individual from the population
-            (priv_type, cost) = population.sample()
+            (priv_type, cost) = self.population.sample()
 
-            offer = learner.make_offer()
+            offer = self.learner.make_offer()
             if offer >= cost:
                 spent += offer
-                learner.update(priv_type, offer)
+                self.learner.update(priv_type, offer)
             else:
-                learner.update(OFFER_REJECTED, offer)
+                self.learner.update(OFFER_REJECTED, offer)
 
-        return (learner.get_prediction(), spent, steps)
+        return (self.learner.get_prediction(), spent, steps)
