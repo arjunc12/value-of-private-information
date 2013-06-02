@@ -36,7 +36,7 @@ class NPLearner(Learner):
         if priv_type == OFFER_REJECTED:
             self.update_reject(offer)
         else:
-            self.update_accept(prive_type, offer)
+            self.update_accept(priv_type, offer)
 
 
     """
@@ -63,7 +63,8 @@ class NPLearner(Learner):
     offer: The offer that was accepted by the individual
     """
     def update_accept(self, priv_type, offer):
-	self.distribution[priv_type].update((self.distribution[priv_type].sample(min_cost, offer), 1))
+	dist = self.distribution[priv_type]
+        dist.update(dist.sample(min_cost, offer), 1)
 
     """
     This makes a random offer drawn from a uniform distrbution
