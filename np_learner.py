@@ -1,3 +1,4 @@
+from population import *
 from learner import *
 import random
 
@@ -80,4 +81,4 @@ class NPLearner(Learner):
     Returns the predicted population.
     """
     def get_prediction(self):
-        raise NotImplementedError()
+        return Population(self.probability, self.distribution)
