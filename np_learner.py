@@ -21,6 +21,8 @@ class NPLearner(Learner):
     min_cost: minimum cost over all private types
     """
     def __init__(self, num_types, max_cost, min_cost=0):
+        self.min_cost = min_cost
+        self.max_cost = max_cost
         probability = [1.0 / num_types for i in range(num_type)]
         distribution = [NPDistribution() for i in range(num_type)]
 	self.population = Population(probability, distribution)
@@ -57,7 +59,8 @@ class NPLearner(Learner):
     offer: The offer that was accepted by the individual
     """
     def update_accept(self, priv_type, offer):
-        raise NotImplementedError()
+        dist = self.population.distribution[priv_type]
+	dist.update((dist.sample(min_cost, offer), 1))
 
     """
     This makes a random offer drawn from a uniform distrbution
