@@ -2,7 +2,6 @@
 This class is the abstract definition for a learning mechanism.
 """
 
-FIRST_OFFER = -2
 OFFER_REJECTED = -1
 
 class Learner(object):
@@ -15,9 +14,18 @@ class Learner(object):
                          OFFER_REJECTED: previous offer rejected
                          priv_type >= 0 : private type of the previous query (offer accepted)
 
-    Returns an offer for the next payout.
+
+    offer: How much did we offer the last person?
+
+    Doesn't need to return anything
     """
-    def update(self, priv_type):
+    def update(self, priv_type, offer):
+        raise NotImplementedError()
+
+    '''
+    Returns how much we should offer the next individual.
+    '''
+    def make_offer(self):
         raise NotImplementedError()
 
     """
