@@ -1,5 +1,6 @@
 from population import *
 from learner import *
+from NPDistribution import *
 import random
 
 """
@@ -25,8 +26,8 @@ class NPLearner(Learner):
     def __init__(self, num_types, max_cost, min_cost=0):
         self.min_cost = min_cost
         self.max_cost = max_cost
-        self.count = [1.0 for i in range(num_type)]
-        self.distribution = [NPDistribution() for i in range(num_type)]
+        self.count = [1.0 for i in range(num_types)]
+        self.distribution = [NPDistribution() for i in range(num_types)]
 
 
     """
@@ -76,8 +77,7 @@ class NPLearner(Learner):
     returns: next offer to make
     """
     def make_offer(self):
-        #raise NotImplementedError()
-        return random.uniform(self.min, self.max)
+        return random.uniform(self.min_cost, self.max_cost)
 
     """
     Returns the predicted population.

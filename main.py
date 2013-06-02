@@ -1,5 +1,5 @@
 from basic_learner import BasicLearner
-from NP_learner import NPLearner
+from np_learner import NPLearner
 import driver
 from normal_distribution import NormalDistribution
 from uniform_distribution import UniformDistribution
