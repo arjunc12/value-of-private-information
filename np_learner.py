@@ -24,9 +24,8 @@ class NPLearner(Learner):
     def __init__(self, num_types, max_cost, min_cost=0):
         self.min_cost = min_cost
         self.max_cost = max_cost
-        probability = [1.0 / num_types for i in range(num_type)]
-        distribution = [NPDistribution() for i in range(num_type)]
-        self.population = Population(probability, distribution)
+        self.probability = [1.0 / num_types for i in range(num_type)]
+        self.distribution = [NPDistribution() for i in range(num_type)]
 
 
     """
@@ -60,8 +59,7 @@ class NPLearner(Learner):
     offer: The offer that was accepted by the individual
     """
     def update_accept(self, priv_type, offer):
-        dist = self.population.distribution[priv_type]
-	dist.update((dist.sample(min_cost, offer), 1))
+	self.distribution[priv_type].update((self.distribution[priv_type].sample(min_cost, offer), 1))
 
     """
     This makes a random offer drawn from a uniform distrbution
