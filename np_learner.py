@@ -46,7 +46,11 @@ class NPLearner(Learner):
     offer: The offer that was reject by the last person
     """
     def update_reject(self, offer):
-        raise NotImplementedError()
+        weights = [self.distribution[i].cdf(offer, self.max_cost) for i in xrange(len(distribution))]
+        overall_sum = (float)(sum(weights))
+        for i in xrange(len(distribution)):
+            self.distribution[i].update(self.distribution[i].sample(offer, self.max_cost),
+                                        weights[i] / sum)
 
 
     """
