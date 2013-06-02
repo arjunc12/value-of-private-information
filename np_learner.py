@@ -36,7 +36,7 @@ class NPLearner(Learner):
         if priv_type == OFFER_REJECTED:
             self.update_reject(offer)
         else:
-            self.update_accept(prive_type, offer)
+            self.update_accept(priv_type, offer)
 
 
     """
