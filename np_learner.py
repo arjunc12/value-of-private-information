@@ -29,7 +29,10 @@ class NPLearner(Learner):
     the underlying non-parametric distrbutions correctly.
     """
     def update(self, priv_type, offer):
-        raise NotImplementedError()
+        if priv_type == OFFER_REJECTED:
+            self.update_reject(offer)
+        else:
+            self.update_accept(prive_type, offer)
 
 
     """
