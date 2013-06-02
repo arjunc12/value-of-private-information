@@ -65,8 +65,8 @@ class NPLearner(Learner):
     offer: The offer that was accepted by the individual
     """
     def update_accept(self, priv_type, offer):
-	self.count[priv_type] += 1
-	dist = self.distribution[priv_type]
+        self.count[priv_type] += 1
+        dist = self.distribution[priv_type]
         dist.update(dist.sample(self.min_cost, offer), 1.0)
 
     """
@@ -83,6 +83,6 @@ class NPLearner(Learner):
     Returns the predicted population.
     """
     def get_prediction(self):
-	norm = sum(self.count)
-	probability = [self.count[i] / norm for i in xrange(len(self.count))]
+        norm = sum(self.count)
+        probability = [self.count[i] / norm for i in xrange(len(self.count))]
         return Population(probability, self.distribution)
