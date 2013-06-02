@@ -64,7 +64,7 @@ class NPLearner(Learner):
     offer: The offer that was accepted by the individual
     """
     def update_accept(self, priv_type, offer):
-	dist = self.distribution[priv_type]
+        dist = self.distribution[priv_type]
         dist.update(dist.sample(self.min_cost, offer), 1)
 
     """
