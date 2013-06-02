@@ -22,15 +22,9 @@ class NPLearner(Learner):
     min_cost: minimum cost over all private types
     """
     def __init__(self, num_types, max_cost, min_cost=0):
-        #raise NotImplementedError()
-        self.num_types = num_types # number of distinct private types
-        self.total = 0 # total number of accepted payout offers
-        self.count = num_types * [0] # count of accepted offers from each type
-        self.lower = num_types * [float("+inf")] # smallest accepted offer from each type
-        self.upper = num_types * [0] # largest accepted offer from each type
-        self.payout = 0 # next payout offer to be made
-        self.max = max_cost
-        self.min = min_cost
+        probability = [1.0 / num_types for i in range(num_type)]
+        distribution = [NPDistribution() for i in range(num_type)]
+        self.population = Population(probability, distribution)
 
 
     """
@@ -38,7 +32,10 @@ class NPLearner(Learner):
     the underlying non-parametric distrbutions correctly.
     """
     def update(self, priv_type, offer):
-        raise NotImplementedError()
+        if priv_type == OFFER_REJECTED:
+            self.update_reject(offer)
+        else:
+            self.update_accept(prive_type, offer)
 
 
     """
