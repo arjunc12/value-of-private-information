@@ -21,7 +21,9 @@ class NPLearner(Learner):
     min_cost: minimum cost over all private types
     """
     def __init__(self, num_types, max_cost, min_cost=0):
-        raise NotImplementedError()
+        probability = [1.0 / num_types for i in range(num_type)]
+        distribution = [NPDistribution() for i in range(num_type)]
+	self.population = Population(probability, distribution)
 
 
     """
