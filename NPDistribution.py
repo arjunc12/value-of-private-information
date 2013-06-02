@@ -12,6 +12,9 @@ class NPDistribution(Distribution):
         self.possible_points = []
         self.distribution = None
 
+    def __len__(self):
+        return len(self.definite_points)
+
     '''
     Returns the probability mass between values a and b, a < b
     '''
@@ -40,11 +43,15 @@ class NPDistribution(Distribution):
             mask = a[:, 1] > np.random.rand(len(possible_points))
             sampled = a[:, 0][mask]
 
-            concatenated = np.concatenate(np.array(self.definite_points), sampled)
+            cat = np.concatenate(np.array(self.definite_points), sampled)
         else:
-            concatenated = self.definite_points
+            cat = np.array(self.definite_points)
 
-        self.distribution = gaussian_kde(concatenated)
+        # THIS IS AN UGLY HACK
+        if cat.size == 1:
+            cat = np.array([cat[0], cat[0] + .02])
+
+        self.distribution = gaussian_kde(cat)
 
     '''
     Samples a point from this distribution between values a and b.
@@ -57,10 +64,13 @@ class NPDistribution(Distribution):
         # integrate using the trapezoidal method, returns all intermediate sums
         cumulated = cumtrapz(self.distribution(lin))
 
+        if cumulated[-1] == 0:
+            return b
+
         # normalize so the integral is equal to 1.0
         cumulated *= 1.0 / cumulated[-1]
 
         rand_val = random.random()
 
-        index = np.nonzero(cumulated > rand_val)[0]
+        index = np.nonzero(cumulated > rand_val)[0][0]
         return lin[index]
