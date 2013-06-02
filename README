@@ -13,7 +13,11 @@ We want to find the distribution of values (find the valuations) in each
     private type. That means there will be n distributions at the end that
      we compare (using K-L divergence) and aggregate into a single metric (TBD)
 
-Stationarity property: treat all people the same
+There is an initial state that can't be analyzed because distributions aren't defined
+    Initially, 1 person is present in each distribution (to get around division by 0)
+    Probably need to make random offers at the beginning to build up distributions
+     
+Possible: stationarity property: treat all people the same
 	The first person is treated the same as the last person and all people in
         between
 	No master prior distribution - the "priors" in the Bayesian sense are
@@ -54,6 +58,8 @@ Update (receives offer and person's response (either (yes,n) or no)):
              sum of all n's current densities greater than offer
 		Add gaussian for kernel density estimation (mean = value, std dev = ?)
              to n's distribution, with prob weight
+             (Implemented as adding this entry with probability weight, and 
+             ignoring it otherwise)
 
 Initial distributions for each n:
 	Assumptions: N is specified, and upper bounds are specified for each n
