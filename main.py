@@ -1,4 +1,5 @@
 from basic_learner import BasicLearner
+from NP_learner import NPLearner
 import driver
 from normal_distribution import NormalDistribution
 from uniform_distribution import UniformDistribution
@@ -12,8 +13,11 @@ def main():
         (0.1, UniformDistribution(9, 10))
     ]
 
-    # Initialize a basic learner
-    learner = BasicLearner(len(distribution))
+    ## Initialize a basic learner
+    #learner = BasicLearner(len(distribution))
+
+    # Initialize a non-parametric learner
+    learner = NPLearner(len(distribution), 15)
 
     d = driver.Driver(distribution, driver.STEPS, 10000, learner)
 
