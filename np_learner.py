@@ -50,7 +50,7 @@ class NPLearner(Learner):
         overall_sum = (float)(sum(weights))
         for i in xrange(len(distribution)):
             self.distribution[i].update(self.distribution[i].sample(offer, self.max_cost),
-                                        weights[i] / sum)
+                                        weights[i] / overall_sum)
 
 
     """
