@@ -1,18 +1,24 @@
 Basic logic:
 
 Assume n \in N private types
-	each private type n has a dataset, a list containing tuples of the form (value,prob) where
+	each private type n has a dataset, a list containing tuples of the form
+            (value,prob) where
 		value: value of offer if accepted or putative value if rejected
-		prob: probability that this person is in this private type n (1 if accepted, <1 if rejected)
-	Ex: say there are 2 private types, one with low valuation for privacy, one with high valuation for privacy
-	
-We want to find the distribution of values (find the valuations) in each private type
-	That means there will be n distributions at the end that we compare (using K-L divergence) and aggregate into a single metric (TBD)
-	
+		prob: probability that this person is in this private type n
+            (1 if accepted, <1 if rejected)
+	Ex: say there are 2 private types, one with low valuation for privacy,
+             one with high valuation for privacy
+
+We want to find the distribution of values (find the valuations) in each
+    private type. That means there will be n distributions at the end that
+     we compare (using K-L divergence) and aggregate into a single metric (TBD)
+
 Stationarity property: treat all people the same
-	The first person is treated the same as the last person and all people in between
-	No master prior distribution - the "priors" in the Bayesian sense are simply the accumulated state as a result of collecting data and learning
-	
+	The first person is treated the same as the last person and all people in
+        between
+	No master prior distribution - the "priors" in the Bayesian sense are
+        simply the accumulated state as a result of collecting data and learning
+
 Flow of driver:
 
 Make offer
@@ -23,24 +29,32 @@ Repeat...
 Details:
 
 Make offer:
-	Mechanism for making offers is currently TBD, but we'll start with random offers
-		Should keep stationarity property where the same algorithm is run for all people
+	Mechanism for making offers is currently TBD, but we'll start with random
+                offers
+		Should keep stationarity property where the same algorithm is run for
+                all people
 	Start with 1 offer per person
-		Can add in multiple offers per person, start low and increase monotonically, don't use wholly random offers
-	
+		Can add in multiple offers per person, start low and increase
+                monotonically, don't use wholly random offers
+
 [Get response]:
 	Person either accepts offer (offer is above their valuation) or rejects it
 	If offer is accepted, person also outputs their private type n
-	
+
 Update (receives offer and person's response (either (yes,n) or no)):
 	Offer accepted: Add tuple (value,1) to n's dataset
-		Value is randomly sampled from n's current density function less than offer for all n
-		Add gaussian for kernel density estimation (mean = offer, std dev = ?) to n's distribution
+		Value is randomly sampled from n's current density function less than
+            offer for all n
+		Add gaussian for kernel density estimation (mean = offer, std dev = ?)
+             to n's distribution
 	Offer rejected: Add tuples (value,prob) to datasets of all n
-		Value is randomly sampled from n's current density function greater than offer for all n
-		Prob is weight of n's current density greater than offer normalized to sum of all n's current densities greater than offer
-		Add gaussian for kernel density estimation (mean = value, std dev = ?) to n's distribution, with prob weight
-		
+		Value is randomly sampled from n's current density function greater
+             than offer for all n
+		Prob is weight of n's current density greater than offer normalized to
+             sum of all n's current densities greater than offer
+		Add gaussian for kernel density estimation (mean = value, std dev = ?)
+             to n's distribution, with prob weight
+
 Initial distributions for each n:
 	Assumptions: N is specified, and upper bounds are specified for each n
 	Initialize each n with uniform (0,max val) distribution, 0 people
