@@ -31,7 +31,10 @@ class BasicLearner(Learner):
         self.upper = num_types * [0] # largest accepted offer from each type
         self.payout = 0 # next payout offer to be made
 
-    def update(self, priv_type):
+    def make_offer(self):
+        return self.payout
+
+    def update(self, priv_type, offer):
         if (priv_type >= 0): # last offer was accepted
             self.total += 1 # one more accepted offer
             self.count[priv_type] += 1 # one more accepted offer for the type
@@ -39,8 +42,6 @@ class BasicLearner(Learner):
             self.upper[priv_type] = max(self.upper[priv_type], self.payout) # update highest accepted offer from type
         elif (priv_type == -1): # last offer rejected
             self.payout += 0.1 # increase next payout
-
-        return self.payout # give offer for next payout
 
     """
     This function returns the predicted population.
