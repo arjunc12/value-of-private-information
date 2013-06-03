@@ -50,7 +50,10 @@ class NPDistribution(Distribution):
             mask = a[:, 1] > np.random.rand(len(self.possible_points))
             sampled = a[:, 0][mask]
 
-            points = np.concatenate(np.array(self.definite_points), sampled)
+            if (sampled != []):
+                points = np.concatenate(np.array(self.definite_points), sampled)
+            else:
+                points = np.array(self.definite_points)
         else:
             points = np.array(self.definite_points)
 
