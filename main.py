@@ -24,7 +24,7 @@ def main():
     #learner = BasicLearner(len(distribution))
 
     # Initialize a non-parametric learner
-    learner = NPLearner(len(distribution), random_offer, 15)
+    learner = NPLearner(len(distribution), uniform_type_offer, 15)
 
     d = driver.Driver(distribution, driver.STEPS, 1000, learner)
 
