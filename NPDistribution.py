@@ -6,7 +6,8 @@ from scipy.stats import gaussian_kde
 
 from distribution import Distribution
 
-EPSILON = 0.05
+# zomg so arbitrary
+OFFSET = 10
 
 class NPDistribution(Distribution):
     def __init__(self):
@@ -54,16 +55,13 @@ class NPDistribution(Distribution):
         else:
             points = np.array(self.definite_points)
 
-        # THIS IS AN UGLY HACK
-
         if points.size > 1:
             self.distribution = gaussian_kde(points)
         else:
-            points = np.array([points[0] - EPSILON, points[0], points[0] + EPSILON])
+            # THIS IS AN UGLY HACK
+            points = np.array([points[0] - OFFSET, points[0] + OFFSET])
             # bw_method?
-            self.distribution = gaussian_kde(points, bw_method=20.0)
-
-
+            self.distribution = gaussian_kde(points)
 
     '''
     Samples a point from this distribution between values a and b.
