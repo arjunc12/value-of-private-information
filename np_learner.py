@@ -23,7 +23,7 @@ class NPLearner(Learner):
 
     min_cost: minimum cost over all private types
     """
-    def __init__(self, num_types, max_cost, min_cost=0):
+    def __init__(self, num_types, offer_strategy, max_cost, min_cost=0):
         self.min_cost = min_cost
         self.max_cost = max_cost
         self.num_types = num_types
@@ -34,17 +34,18 @@ class NPLearner(Learner):
           self.distribution.update(6, 1)
         self.priv_type = []
         self.offer = []
+        self.offer_strategy = offer_strategy
 
 
     """
     This should based on if the offer was accepted or not update
     the underlying non-parametric distrbutions correctly.
     """
-    def update(self, priv_type, offer):
+    def update(self, priv_type, last_reject, offer):
         if priv_type == OFFER_REJECTED:
-            self.update_reject(offer)
+            self.update_reject(last_reject, offer)
         else:
-            self.update_accept(priv_type, offer)
+            self.update_accept(priv_type, last_reject, offer)
 
         self.priv_type.append(priv_type)
         self.offer.append(offer)
@@ -54,9 +55,12 @@ class NPLearner(Learner):
     This should update the underlying non-parmetric distrbutions
     given that the specified offer was rejected.
 
+    last_reject: The last offer that was rejected,
+                 None if there was no last rejection
+
     offer: The offer that was reject by the last person
     """
-    def update_reject(self, offer):
+    def update_reject(self, last_reject, offer):
         weights = [self.count[i] * self.distribution[i].cdf(offer, self.max_cost)
                    for i in xrange(len(self.distribution))]
         overall_sum = (float)(sum(weights))
@@ -73,9 +77,12 @@ class NPLearner(Learner):
 
     priv_type: The private type of the individual that accepted
 
+    last_reject: The last offer that was rejected,
+                 None if there was no last rejection
+
     offer: The offer that was accepted by the individual
     """
-    def update_accept(self, priv_type, offer):
+    def update_accept(self, priv_type, last_reject, offer):
         self.count[priv_type] += 1
         dist = self.distribution[priv_type]
         if len(dist) != 0:
@@ -90,19 +97,7 @@ class NPLearner(Learner):
     returns: next offer to make
     """
     def make_offer(self):
-        #return random.uniform(self.min_cost, self.max_cost)
-        enough = True
-        for i in range(self.num_types):
-            if (self.count[i] <= 20):
-                enough = False
-                break
-        if (enough):
-            #offer = self.get_prediction().sample()[1]
-            offer = self.distribution[random.randint(0, self.num_types - 1)].sample()
-            print offer
-            return offer
-        else:
-            return random.uniform(self.min_cost, self.max_cost)
+        return self.offer_strategy(self)
 
     """
     Returns the predicted population.
