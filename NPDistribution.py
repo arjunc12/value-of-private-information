@@ -15,6 +15,10 @@ class NPDistribution(Distribution):
         self.possible_points = []
         self.distribution = None
 
+        # Stick in two data points to prevent crashes
+        self.update(10, 1)
+        self.update(11, 1)
+
     def __len__(self):
         return len(self.definite_points)
 
