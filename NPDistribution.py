@@ -52,7 +52,7 @@ class NPDistribution(Distribution):
             sampled = a[:, 0][mask]
 
             if (sampled != []):
-                points = np.concatenate(np.array(self.definite_points), sampled)
+                points = np.concatenate((np.array(self.definite_points), np.array(sampled)))
             else:
                 points = np.array(self.definite_points)
         else:
