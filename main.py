@@ -2,7 +2,7 @@ import random
 import sys
 import os
 from datetime import datetime
-from pickle import Pickler
+import pickle
 
 from basic_learner import BasicLearner
 from np_learner import NPLearner
@@ -54,8 +54,11 @@ def main():
     if '--save' in args:
         if not os.path.exists('data'):
             os.makedirs('data')
-        f = open(str(datetime.now()) + '.dat', 'w')
-        pickle.dump(f, (distribution, constraint_type, constraint_val, learner, prediction, payout, individuals))
+        fname = "data/run"
+        format = "%Y-%m-%d-%H-%M-%S"
+        path = "%s_%s" % (fname, datetime.now().strftime(format))
+        f = open(path, 'w')
+        pickle.dump((distribution, constraint_type, constraint_val, learner, prediction, payout, individuals), f)
 
     # Output information about the test
     print("population:\n" + str(d.population))
