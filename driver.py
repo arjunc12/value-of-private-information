@@ -72,16 +72,21 @@ class Driver(object):
     def run_steps_constraint(self):
         steps = self.constraint_val
         spent = 0.0
+        num_accepted = 0
 
-        for _ in xrange(steps):
+        for i in xrange(steps):
             # sample an individual from the population
             (priv_type, cost) = self.population.sample()
 
             offer = self.learner.make_offer()
+            print "Offer #" + str(i) + ":\t" + str(offer) + "\t",
             if offer >= cost:
+                print "Accepted"
                 spent += offer
+                num_accepted += 1
                 self.learner.update(priv_type, offer)
             else:
+                print "Rejected"
                 self.learner.update(OFFER_REJECTED, offer)
 
-        return (self.learner.get_prediction(), spent, steps)
+        return (self.learner.get_prediction(), spent, steps, num_accepted)

@@ -19,15 +19,16 @@ def main():
     # Initialize a non-parametric learner
     learner = NPLearner(len(distribution), 15)
 
-    d = driver.Driver(distribution, driver.STEPS, 10000, learner)
+    d = driver.Driver(distribution, driver.STEPS, 1000, learner)
 
     # Obtain the prediction population
-    (prediction, payout, individuals) = d.run()
+    (prediction, payout, individuals, accepted) = d.run()
 
     # Output information about the test
     print("population:\n" + str(d.population))
     print("prediction:\n" + str(prediction))
     print("total_payout: " + str(payout))
+    print("accepted: " + str(accepted) + " / " + str(individuals))
 
 if __name__ == "__main__":
     main()
