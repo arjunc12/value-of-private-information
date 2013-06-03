@@ -48,7 +48,7 @@ class NPDistribution(Distribution):
             a = np.array(self.possible_points)
 
             # want to keep if weight is greater than random number
-            mask = a[:, 1] > np.random.rand(len(possible_points))
+            mask = a[:, 1] > np.random.rand(len(self.possible_points))
             sampled = a[:, 0][mask]
 
             points = np.concatenate(np.array(self.definite_points), sampled)
