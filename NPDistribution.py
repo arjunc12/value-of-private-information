@@ -6,6 +6,8 @@ from scipy.stats import gaussian_kde
 
 from distribution import Distribution
 
+EPSILON = 0.05
+
 class NPDistribution(Distribution):
     def __init__(self):
         self.definite_points = []
@@ -16,11 +18,16 @@ class NPDistribution(Distribution):
         return len(self.definite_points)
 
     '''
+    Returns the probability mass under x
+    '''
+    def pdf(self, x):
+        return self.distribution([x])[0]
+
+    '''
     Returns the probability mass between values a and b, a < b
     '''
     def cdf(self, a, b):
         return self.distribution.integrate_box_1d(a, b)
-
 
     '''
     Include a Gaussian distribution centered at mu. 'weight' is in between
@@ -43,15 +50,20 @@ class NPDistribution(Distribution):
             mask = a[:, 1] > np.random.rand(len(possible_points))
             sampled = a[:, 0][mask]
 
-            cat = np.concatenate(np.array(self.definite_points), sampled)
+            points = np.concatenate(np.array(self.definite_points), sampled)
         else:
-            cat = np.array(self.definite_points)
+            points = np.array(self.definite_points)
 
         # THIS IS AN UGLY HACK
-        if cat.size == 1:
-            cat = np.array([cat[0], cat[0] + .02])
 
-        self.distribution = gaussian_kde(cat)
+        if points.size > 1:
+            self.distribution = gaussian_kde(points)
+        else:
+            points = np.array([points[0] - EPSILON, points[0], points[0] + EPSILON])
+            # bw_method?
+            self.distribution = gaussian_kde(points, bw_method=20.0)
+
+
 
     '''
     Samples a point from this distribution between values a and b.
@@ -64,8 +76,9 @@ class NPDistribution(Distribution):
         # integrate using the trapezoidal method, returns all intermediate sums
         cumulated = cumtrapz(self.distribution(lin))
 
+        # no probability mass, just return the average
         if cumulated[-1] == 0:
-            return b
+            return (a + b) / 2.0
 
         # normalize so the integral is equal to 1.0
         cumulated *= 1.0 / cumulated[-1]
