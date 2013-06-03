@@ -73,10 +73,10 @@ class NPDistribution(Distribution):
     '''
     Samples a point from this distribution between values a and b.
     '''
-    def sample(self, a, b):
+    def sample(self, a=0, b=100):
         assert a <= b
 
-        lin = np.linspace(a, b, 100)
+        lin = np.linspace(a, b, 1000)
 
         # integrate using the trapezoidal method, returns all intermediate sums
         cumulated = cumtrapz(self.distribution(lin))
