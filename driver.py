@@ -41,6 +41,19 @@ class Driver(object):
         self.constraint_val = constraint_val
         self.learner = learner
 
+    '''
+    This function allows us to interactively haggle with someone's data that
+    we want to buy. The 'cost' parameter is the value that the individual attaches
+    to keeping their data private.
+    The return value of this function is a 3 tuple: (accepted, rejected_offer, accepted_offer)
+
+    'accepted' is a boolean of whether or not the individual accepted an offer.
+    'rejected_offer' is the greatest value of any offer the individual rejected.
+    'accepted_offer' is the value of the offer that the user accepted.
+
+    Note that either 'accepted_offer' will be None when accepted is False, and that
+    'rejected_offer' can be None when accepted_offer is True (if they accepted the first offer).
+    '''
     def offer_process(self, cost):
         previous_offer = None
         for offer in self.learner.make_offer():
@@ -49,6 +62,11 @@ class Driver(object):
             previous_offer = offer
         return (False, previous_offer, None)
 
+    '''
+    The main function of this class. Returns a 3-tuple: (distribution, spent, individuals_seen)
+    'distribution' is a population object representing what we learned about each type.
+    'spent' is how much money we paid out, 'individuals_seen' is how many individuals we talked to.
+    '''
     def run(self):
         if self.constraint_type == COST:
             return self.run_cost_constraint()

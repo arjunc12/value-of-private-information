@@ -23,6 +23,8 @@ class NPLearner(Learner):
     max_cost: maximum cost over all private types
 
     min_cost: minimum cost over all private types
+
+    offer_strategy: A valid generator function that generates values greater than 0
     """
     def __init__(self, num_types, offer_strategy, max_cost, min_cost=0):
         self.min_cost = min_cost

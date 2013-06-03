@@ -3,6 +3,7 @@ import sys
 import os
 from datetime import datetime
 from pickle import Pickler
+import numpy
 
 from basic_learner import BasicLearner
 from np_learner import NPLearner
@@ -18,6 +19,7 @@ This file contains the code that runs the main experiment.
 """
 def main():
     random.seed(SEED)
+    numpy.random.seed(SEED)
 
     distribution = [
         (0.9, NormalDistribution(1, 0.5)),
@@ -31,8 +33,10 @@ def main():
 
     learner = NPLearner(len(distribution), offers.uniform_type_offer, 15)
 
+    # defaults
     constraint_type = driver.STEPS
     constraint_val = 1000
+
     args = sys.argv
 
     if '-c' in args:
