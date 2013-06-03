@@ -1,7 +1,7 @@
 import random
 import sys
 import os
-from datatime import datetime
+from datetime import datetime
 from pickle import Pickler
 
 from basic_learner import BasicLearner
@@ -28,7 +28,7 @@ def main():
     #learner = BasicLearner(len(distribution))
 
     # Initialize a non-parametric learner
-<<<<<<< HEAD
+
     learner = NPLearner(len(distribution), uniform_type_offer, 15)
     
     constraint_type = driver.STEPS
@@ -41,7 +41,7 @@ def main():
         constraint_val = float(args[i + 1])
     elif '-s' in args:
         i = args.index('-s')
-        constraint_val = float(args[i + 1])
+        constraint_val = int(args[i + 1])
      
     d = driver.Driver(distribution, constraint_type, constraint_val, learner)
     
