@@ -30,8 +30,8 @@ class NPLearner(Learner):
         self.count = [1.0 for i in range(num_types)]
         self.distribution = [NPDistribution() for i in range(num_types)]
         for i in range(num_types):
-          self.distribution.update(4, 1)
-          self.distribution.update(6, 1)
+          self.distribution[i].update(4, 1)
+          self.distribution[i].update(6, 1)
         self.priv_type = []
         self.offer = []
         self.offer_strategy = offer_strategy
