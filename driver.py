@@ -1,5 +1,6 @@
 from learner import OFFER_REJECTED
 from population import Population
+import utils
 
 COST = 0
 STEPS = 1
@@ -40,6 +41,14 @@ class Driver(object):
         self.constraint_val = constraint_val
         self.learner = learner
 
+    def offer_process(self, cost):
+        previous_offer = None
+        for offer in self.learner.make_offer():
+            if offer >= cost:
+                return (True, previous_offer, offer)
+            previous_offer = offer
+        return (False, previous_offer, None)
+
     def run(self):
         if self.constraint_type == COST:
             return self.run_cost_constraint()
@@ -57,14 +66,14 @@ class Driver(object):
             # sample an individual from the population
             (priv_type, cost) = self.population.sample()
 
-            offer = self.learner.make_offer()
-
-            if offer >= cost:
-                spent += offer
-                self.learner.update(priv_type, offer)
+            accepted, rejected_offer, accepted_offer = self.offer_process(cost)
+            if accepted:
+                spent += accepted_offer
+                ret_type = priv_type
             else:
-                self.learner.update(OFFER_REJECTED, offer)
+                ret_type = OFFER_REJECTED
 
+            self.learner.update(ret_type, rejected_offer, accepted_offer)
             individuals_seen += 1
 
         return (self.learner.get_prediction(), spent, individuals_seen)
@@ -78,15 +87,13 @@ class Driver(object):
             # sample an individual from the population
             (priv_type, cost) = self.population.sample()
 
-            offer = self.learner.make_offer()
-            print "Offer #" + str(i) + ":\t" + str(offer) + "\t",
-            if offer >= cost:
-                print "Accepted"
-                spent += offer
-                num_accepted += 1
-                self.learner.update(priv_type, offer)
+            accepted, rejected_offer, accepted_offer = self.offer_process(cost)
+            if accepted:
+                spent += accepted_offer
+                ret_type = priv_type
             else:
-                print "Rejected"
-                self.learner.update(OFFER_REJECTED, offer)
+                ret_type = OFFER_REJETED
 
-        return (self.learner.get_prediction(), spent, steps, num_accepted)
+            self.learner.update(ret_type, rejected_offer, accepted_offer)
+
+        return (self.learner.get_prediction(), spent, steps)
