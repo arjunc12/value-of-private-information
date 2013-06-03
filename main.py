@@ -9,7 +9,7 @@ from np_learner import NPLearner
 import driver
 from normal_distribution import NormalDistribution
 from uniform_distribution import UniformDistribution
-from offers import *
+import offers
 
 SEED = 3129412
 
@@ -29,12 +29,12 @@ def main():
 
     # Initialize a non-parametric learner
 
-    learner = NPLearner(len(distribution), uniform_type_offer, 15)
-    
+    learner = NPLearner(len(distribution), offers.uniform_type_offer, 15)
+
     constraint_type = driver.STEPS
     constraint_val = 1000
     args = sys.argv
-    
+
     if '-c' in args:
         constraint_type = driver.COST
         i = args.index('-c')
@@ -42,18 +42,21 @@ def main():
     elif '-s' in args:
         i = args.index('-s')
         constraint_val = int(args[i + 1])
-     
+
     d = driver.Driver(distribution, constraint_type, constraint_val, learner)
-    
+
     # Obtain the prediction population
-    (prediction, payout, individuals, accepted) = d.run()
-    
+    (prediction, payout, individuals) = d.run()
+
+    # little bit fragile
+    accepted = sum(map(lambda x: len(x.definite_points), prediction.distribution))
+
     if '--save' in args:
         if not os.path.exists('data'):
             os.makedirs('data')
         f = open(str(datetime.now()) + '.dat', 'w')
         p.dump(f, (distribution, constraint_type, constraint_val, learner, prediction, payout, individuals))
-    
+
 
     # Output information about the test
     print("population:\n" + str(d.population))

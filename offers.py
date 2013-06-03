@@ -5,7 +5,7 @@ def random_offer(learner):
     """
     Returns a random offer uniformly drawn from min to max.
     """
-    return random.uniform(learner.min_cost, learner.max_cost)
+    yield random.uniform(learner.min_cost, learner.max_cost)
 
 def uniform_type_offer(learner):
     """
@@ -18,9 +18,9 @@ def uniform_type_offer(learner):
             break
     if enough:
         offer = learner.distribution[random.randint(0, len(learner.count) - 1)].sample()
-        return offer
+        yield offer
     else:
-        return random_offer(learner)
+        yield random_offer(learner).next()
 
 
 
@@ -35,9 +35,9 @@ def most_probable_type_offer(learner):
             break
     if enough:
         offer = learner.get_prediction().sample()[1]
-        return offer
+        yield offer
     else:
-        return random_offer(learner)
+        yield random_offer(learner)
 
 def least_probable_type_offer(learner):
     """
@@ -56,6 +56,6 @@ def least_probable_type_offer(learner):
         max_cost = max(learner.distribution[index].definite_points)
         min_cost = min(learner.distribution[index].definite_points)
         offer = learner.distribution[index].sample(min_cost, max_cost)
-        return offer
+        yield offer
     else:
-        return random_offer(learner)
+        yield random_offer(learner)

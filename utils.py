@@ -13,7 +13,7 @@ def kldivergence(d1, d2):
         # not sure how to handle case of pdf2 = 0 - for now returning 0
         if pdf1 == 0 or pdf2 == 0:
             return 0
-        
+
         return math.log(pdf1 / pdf2) * pdf1
-        
+
     return quad(klfunc, -numpy.inf, numpy.inf)
