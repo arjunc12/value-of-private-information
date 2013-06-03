@@ -9,6 +9,7 @@ from np_learner import NPLearner
 import driver
 from normal_distribution import NormalDistribution
 from uniform_distribution import UniformDistribution
+from offers import *
 
 SEED = 3129412
 
@@ -27,7 +28,8 @@ def main():
     #learner = BasicLearner(len(distribution))
 
     # Initialize a non-parametric learner
-    learner = NPLearner(len(distribution), 15)
+<<<<<<< HEAD
+    learner = NPLearner(len(distribution), uniform_type_offer, 15)
     
     constraint_type = driver.STEPS
     constraint_val = 1000
@@ -57,6 +59,7 @@ def main():
     print("population:\n" + str(d.population))
     print("prediction:\n" + str(prediction))
     print("total_payout: " + str(payout))
+    print("accepted: " + str(accepted) + " / " + str(individuals))
 
 if __name__ == "__main__":
     main()
