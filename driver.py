@@ -81,7 +81,6 @@ class Driver(object):
     def run_steps_constraint(self):
         steps = self.constraint_val
         spent = 0.0
-        num_accepted = 0
 
         for i in xrange(steps):
             # sample an individual from the population
@@ -92,7 +91,7 @@ class Driver(object):
                 spent += accepted_offer
                 ret_type = priv_type
             else:
-                ret_type = OFFER_REJETED
+                ret_type = OFFER_REJECTED
 
             self.learner.update(ret_type, rejected_offer, accepted_offer)
 
