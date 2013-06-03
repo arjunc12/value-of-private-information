@@ -15,10 +15,6 @@ class NPDistribution(Distribution):
         self.possible_points = []
         self.distribution = None
 
-        # Stick in two data points to prevent crashes
-        self.update(10, 1)
-        self.update(11, 1)
-
     def __len__(self):
         return len(self.definite_points)
 
@@ -31,8 +27,10 @@ class NPDistribution(Distribution):
     '''
     Returns the probability mass between values a and b, a < b
     '''
-    def cdf(self, a, b):
-        return self.distribution.integrate_box_1d(a, b)
+    def cdf(self, a, b=None):
+        if (b != None):
+            return self.distribution.integrate_box_1d(a, b)
+        return self.distribution.integrate_box_1d(0, a)
 
     '''
     Include a Gaussian distribution centered at mu. 'weight' is in between
@@ -92,3 +90,10 @@ class NPDistribution(Distribution):
 
         index = np.nonzero(cumulated > rand_val)[0][0]
         return lin[index]
+
+    """
+    Returns a string representing the distribution.
+    """
+    def __str__(self):
+        return "NPDistribution([" + str(self.inverseCDFIter(0.25)) + ", " + str(self.inverseCDFIter(0.50)) + ", " + str(self.inverseCDFIter(0.75)) + "])"
+
