@@ -26,6 +26,7 @@ class NPLearner(Learner):
     def __init__(self, num_types, max_cost, min_cost=0):
         self.min_cost = min_cost
         self.max_cost = max_cost
+        self.num_types = num_types
         self.count = [1.0 for i in range(num_types)]
         self.distribution = [NPDistribution() for i in range(num_types)]
 
@@ -81,7 +82,19 @@ class NPLearner(Learner):
     returns: next offer to make
     """
     def make_offer(self):
-        return random.uniform(self.min_cost, self.max_cost)
+        #return random.uniform(self.min_cost, self.max_cost)
+        enough = True
+        for i in range(self.num_types):
+            if (self.count[i] <= 20):
+                enough = False
+                break
+        if (enough):
+            #offer = self.get_prediction().sample()[1]
+            offer = self.distribution[random.randint(0, self.num_types - 1)].sample()
+            print offer
+            return offer
+        else:
+            return random.uniform(self.min_cost, self.max_cost)
 
     """
     Returns the predicted population.
