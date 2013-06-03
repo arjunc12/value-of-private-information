@@ -61,9 +61,9 @@ class Driver(object):
 
             if offer >= cost:
                 spent += offer
-                self.learner.update(priv_type, offer)
+                self.learner.update(priv_type, None, offer)
             else:
-                self.learner.update(OFFER_REJECTED, offer)
+                self.learner.update(OFFER_REJECTED, None, offer)
 
             individuals_seen += 1
 
@@ -84,9 +84,9 @@ class Driver(object):
                 print "Accepted"
                 spent += offer
                 num_accepted += 1
-                self.learner.update(priv_type, offer)
+                self.learner.update(priv_type, None, offer)
             else:
                 print "Rejected"
-                self.learner.update(OFFER_REJECTED, offer)
+                self.learner.update(OFFER_REJECTED, None, offer)
 
         return (self.learner.get_prediction(), spent, steps, num_accepted)

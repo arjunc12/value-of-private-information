@@ -36,20 +36,23 @@ class NPLearner(Learner):
     This should based on if the offer was accepted or not update
     the underlying non-parametric distrbutions correctly.
     """
-    def update(self, priv_type, offer):
+    def update(self, priv_type, last_reject, offer):
         if priv_type == OFFER_REJECTED:
-            self.update_reject(offer)
+            self.update_reject(last_reject, offer)
         else:
-            self.update_accept(priv_type, offer)
+            self.update_accept(priv_type, last_reject, offer)
 
 
     """
     This should update the underlying non-parmetric distrbutions
     given that the specified offer was rejected.
 
+    last_reject: The last offer that was rejected,
+                 None if there was no last rejection
+
     offer: The offer that was reject by the last person
     """
-    def update_reject(self, offer):
+    def update_reject(self, last_reject, offer):
         weights = [self.count[i] * self.distribution[i].cdf(offer, self.max_cost)
                    for i in xrange(len(self.distribution))]
         overall_sum = (float)(sum(weights))
@@ -66,9 +69,12 @@ class NPLearner(Learner):
 
     priv_type: The private type of the individual that accepted
 
+    last_reject: The last offer that was rejected,
+                 None if there was no last rejection
+
     offer: The offer that was accepted by the individual
     """
-    def update_accept(self, priv_type, offer):
+    def update_accept(self, priv_type, last_reject, offer):
         self.count[priv_type] += 1
         dist = self.distribution[priv_type]
         if len(dist) != 0:
