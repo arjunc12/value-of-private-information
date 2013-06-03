@@ -52,7 +52,7 @@ def main():
         if not os.path.exists('data'):
             os.makedirs('data')
         f = open(str(datetime.now()) + '.dat', 'w')
-        p.dump(f, (distribution, constraint_type, constraint_val, learner, prediction, payout, individuals))
+        pickle.dump(f, (distribution, constraint_type, constraint_val, learner, prediction, payout, individuals))
     
 
     # Output information about the test
