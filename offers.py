@@ -13,10 +13,10 @@ def uniform_type_offer(learner):
     """
     enough = True
     for i in range(len(learner.count)):
-        if (learner.count[i] <= 20):
+        if learner.count[i] <= 20:
             enough = False
             break
-    if (enough):
+    if enough:
         offer = learner.distribution[random.randint(0, len(learner.count) - 1)].sample()
         return offer
     else:
@@ -30,11 +30,32 @@ def most_probable_type_offer(learner):
     """
     enough = True
     for i in range(len(learner.count)):
-        if (learner.count[i] <= 20):
+        if learner.count[i] <= 20:
             enough = False
             break
-    if (enough):
+    if enough:
         offer = learner.get_prediction().sample()[1]
+        return offer
+    else:
+        return random_offer(learner)
+
+def least_probable_type_offer(learner):
+    """
+    Returns an offer designed to sample the population for the least common private type.
+    """
+    enough = True
+    for i in range(len(learner.count)):
+        if learner.count[i] <= 20:
+            enough = False
+            break
+    if enough:
+        # Find the distribution with the least cost
+        scores = [len(distr.definite_points) + sum(map(lambda x: x[1], distr.possible_points)) for
+         distr in learner.distribution]
+        index = scores.index(min(scores))
+        max_cost = max(learner.distribution[index].definite_points)
+        min_cost = min(learner.distribution[index].definite_points)
+        offer = learner.distribution[index].sample(min_cost, max_cost)
         return offer
     else:
         return random_offer(learner)
