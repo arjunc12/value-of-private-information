@@ -31,3 +31,11 @@ class UniformDistribution(Distribution):
         if x < self.start or x >= self.end:
             return 0
         return 1.0 / (self.end - self.start)
+        
+    def cdf(self, x):
+        if x < self.start:
+            return 0
+        elif x > self.end:
+            return 1
+        else:
+            return float(x - self.start) / float(self.end - self.start)
