@@ -46,7 +46,7 @@ def main():
     d = driver.Driver(distribution, constraint_type, constraint_val, learner)
     
     # Obtain the prediction population
-    (prediction, payout, individuals) = d.run()
+    (prediction, payout, individuals, accepted) = d.run()
     
     if '--save' in args:
         if not os.path.exists('data'):
