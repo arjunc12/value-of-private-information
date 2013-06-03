@@ -29,6 +29,11 @@ class NPLearner(Learner):
         self.num_types = num_types
         self.count = [1.0 for i in range(num_types)]
         self.distribution = [NPDistribution() for i in range(num_types)]
+        for i in range(num_types):
+          self.distribution.update(4, 1)
+          self.distribution.update(6, 1)
+        self.priv_type = []
+        self.offer = []
 
 
     """
@@ -40,6 +45,9 @@ class NPLearner(Learner):
             self.update_reject(offer)
         else:
             self.update_accept(priv_type, offer)
+
+        self.priv_type.append(priv_type)
+        self.offer.append(offer)
 
 
     """
@@ -103,3 +111,4 @@ class NPLearner(Learner):
         norm = sum(self.count)
         probability = [self.count[i] / norm for i in xrange(len(self.count))]
         return Population(probability, self.distribution)
+
