@@ -96,4 +96,3 @@ class NPDistribution(Distribution):
     """
     def __str__(self):
         return "NPDistribution([" + str(self.inverseCDFIter(0.25)) + ", " + str(self.inverseCDFIter(0.50)) + ", " + str(self.inverseCDFIter(0.75)) + "])"
-
