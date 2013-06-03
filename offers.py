@@ -23,7 +23,6 @@ def uniform_type_offer(learner):
         yield random_offer(learner).next()
 
 
-
 def most_probable_type_offer(learner):
     """
     Returns an offer designed to sample the population for the most common private type.
@@ -37,4 +36,4 @@ def most_probable_type_offer(learner):
         offer = learner.get_prediction().sample()[1]
         yield offer
     else:
-        yield random_offer(learner)
+        yield random_offer(learner).next()
