@@ -5,6 +5,7 @@ from np_learner import NPLearner
 import driver
 from normal_distribution import NormalDistribution
 from uniform_distribution import UniformDistribution
+from offers import *
 
 SEED = 3129412
 
@@ -23,7 +24,7 @@ def main():
     #learner = BasicLearner(len(distribution))
 
     # Initialize a non-parametric learner
-    learner = NPLearner(len(distribution), 15)
+    learner = NPLearner(len(distribution), random_offer, 15)
 
     d = driver.Driver(distribution, driver.STEPS, 1000, learner)
 
