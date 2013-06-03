@@ -28,7 +28,6 @@ def main():
     #learner = BasicLearner(len(distribution))
 
     # Initialize a non-parametric learner
-<<<<<<< HEAD
     learner = NPLearner(len(distribution), uniform_type_offer, 15)
     
     constraint_type = driver.STEPS
