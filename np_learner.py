@@ -2,6 +2,7 @@ from population import *
 from learner import *
 from NPDistribution import *
 import random
+from types import MethodType
 
 """
 This class describes a non-parametric distribution learning mechanism.
@@ -34,7 +35,8 @@ class NPLearner(Learner):
             self.distribution[i].update(6, 1)
         self.priv_type = []
         self.offer = []
-        self.offer_strategy = offer_strategy
+
+        self.make_offer = MethodType(offer_strategy, self)
 
 
     """
@@ -86,15 +88,6 @@ class NPLearner(Learner):
             dist.update(dist.sample(self.min_cost, accepted_offer), 1.0)
         else:
             dist.update(accepted_offer, 1.0)
-
-    """
-    This makes a random offer drawn from a uniform distrbution
-    from the minimum cost to the maximum cost.
-
-    returns: next offer to make
-    """
-    def make_offer(self):
-        yield self.offer_strategy(self)
 
     """
     Returns the predicted population.

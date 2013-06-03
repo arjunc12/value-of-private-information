@@ -9,7 +9,7 @@ from np_learner import NPLearner
 import driver
 from normal_distribution import NormalDistribution
 from uniform_distribution import UniformDistribution
-from offers import *
+import offers
 
 SEED = 3129412
 
@@ -29,7 +29,7 @@ def main():
 
     # Initialize a non-parametric learner
 
-    learner = NPLearner(len(distribution), uniform_type_offer, 15)
+    learner = NPLearner(len(distribution), offers.uniform_type_offer, 15)
 
     constraint_type = driver.STEPS
     constraint_val = 1000
