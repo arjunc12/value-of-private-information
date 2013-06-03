@@ -6,21 +6,33 @@ from scipy.stats import gaussian_kde
 
 from distribution import Distribution
 
+# zomg so arbitrary
+OFFSET = 10
+
 class NPDistribution(Distribution):
     def __init__(self):
         self.definite_points = []
         self.possible_points = []
         self.distribution = None
 
+        # Stick in two data points to prevent crashes
+        self.update(10, 1)
+        self.update(11, 1)
+
     def __len__(self):
         return len(self.definite_points)
+
+    '''
+    Returns the probability mass under x
+    '''
+    def pdf(self, x):
+        return self.distribution([x])[0]
 
     '''
     Returns the probability mass between values a and b, a < b
     '''
     def cdf(self, a, b):
         return self.distribution.integrate_box_1d(a, b)
-
 
     '''
     Include a Gaussian distribution centered at mu. 'weight' is in between
@@ -40,18 +52,23 @@ class NPDistribution(Distribution):
             a = np.array(self.possible_points)
 
             # want to keep if weight is greater than random number
-            mask = a[:, 1] > np.random.rand(len(possible_points))
+            mask = a[:, 1] > np.random.rand(len(self.possible_points))
             sampled = a[:, 0][mask]
 
-            cat = np.concatenate(np.array(self.definite_points), sampled)
+            if (sampled != []):
+                points = np.concatenate((np.array(self.definite_points), np.array(sampled)))
+            else:
+                points = np.array(self.definite_points)
         else:
-            cat = np.array(self.definite_points)
+            points = np.array(self.definite_points)
 
-        # THIS IS AN UGLY HACK
-        if cat.size == 1:
-            cat = np.array([cat[0], cat[0] + .02])
-
-        self.distribution = gaussian_kde(cat)
+        if points.size > 1:
+            self.distribution = gaussian_kde(points)
+        else:
+            # THIS IS AN UGLY HACK
+            points = np.array([points[0] - OFFSET, points[0] + OFFSET])
+            # bw_method?
+            self.distribution = gaussian_kde(points)
 
     '''
     Samples a point from this distribution between values a and b.
@@ -64,8 +81,9 @@ class NPDistribution(Distribution):
         # integrate using the trapezoidal method, returns all intermediate sums
         cumulated = cumtrapz(self.distribution(lin))
 
+        # no probability mass, just return the average
         if cumulated[-1] == 0:
-            return b
+            return (a + b) / 2.0
 
         # normalize so the integral is equal to 1.0
         cumulated *= 1.0 / cumulated[-1]

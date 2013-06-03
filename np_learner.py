@@ -54,7 +54,7 @@ class NPLearner(Learner):
         for i in xrange(len(self.distribution)):
             self.distribution[i].update(self.distribution[i].sample(offer, self.max_cost),
                                         weights[i] / overall_sum)
-            self.count[i] += weight[i] / overall_sum
+            self.count[i] += weights[i] / overall_sum
 
 
     """
