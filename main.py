@@ -1,13 +1,19 @@
+import random
+
 from basic_learner import BasicLearner
 from np_learner import NPLearner
 import driver
 from normal_distribution import NormalDistribution
 from uniform_distribution import UniformDistribution
 
+SEED = 3129412
+
 """
 This file contains the code that runs the main experiment.
 """
 def main():
+    random.seed(SEED)
+
     distribution = [
         (0.9, NormalDistribution(1, 0.5)),
         (0.1, UniformDistribution(9, 10))
