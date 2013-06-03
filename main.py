@@ -31,7 +31,14 @@ def main():
 
     # Initialize a non-parametric learner
 
-    learner = NPLearner(len(distribution), offers.uniform_type_offer, 15)
+    #learner = NPLearner(len(distribution), offers.uniform_type_offer, 15)
+
+    init_offer = lambda l: offers.most_probable_type_offer(l).next()
+    prob = lambda l: 0.5
+    increment = lambda l: 1
+    learner = NPLearner(len(distribution),
+                        offers.configure_repeated_bidder(init_offer, prob, increment),
+                        15)
 
     # defaults
     constraint_type = driver.STEPS

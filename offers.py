@@ -37,3 +37,20 @@ def most_probable_type_offer(learner):
         yield offer
     else:
         yield random_offer(learner).next()
+
+'''
+Initial_offer, probability, and increment are all functions of learner.
+Probability is probability of making another offer.
+'''
+def configure_repeated_bidder(initial_offer, probability, increment):
+    def inner(learner):
+        prob = probability(learner)
+        inc = increment(learner)
+        offer = initial_offer(learner)
+
+        yield offer
+        while random.random() < prob:
+            offer += inc
+            yield offer
+
+    return inner
