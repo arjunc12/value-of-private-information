@@ -26,3 +26,8 @@ class UniformDistribution(Distribution):
     """
     def __str__(self):
         return "UniformDistribution(start = " + str(self.start) + ", end = " + str(self.end) + ")"
+        
+    def pdf(self, x):
+        if x < self.start or x >= self.end:
+            return 0
+        return 1.0 / (self.end - self.start)

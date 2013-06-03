@@ -1,5 +1,6 @@
 from distribution import *
 import random
+import math
 
 """
 This class represents a normal distribution.
@@ -26,3 +27,7 @@ class NormalDistribution(Distribution):
     """
     def __str__(self):
         return "NormalDistribution(mu = " + str(self.mu) + ", sigma = " + str(self.sigma) + ")"
+        
+    def pdf(self, x):
+        coefficient = 1.0 / (self.sigma * (math.sqrt(2 * math.pi)))
+        return coefficient * math.exp(-((x - self.mu) ** 2) / (2 * (self.sigma ** 2)))

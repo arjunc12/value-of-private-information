@@ -8,3 +8,6 @@ class Distribution(object):
     """
     def sample(self):
         raise NotImplementedError()
+        
+    def pdf(self, x):
+        raise NotImplementedError()
