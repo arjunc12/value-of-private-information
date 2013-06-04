@@ -84,8 +84,9 @@ class Driver(object):
     def update_divergences(self, priv_type):
         true_dist = self.get_distribution_for_type(priv_type)
         learned_dist = self.learner.distribution[priv_type]
-        kl_div = utils.jsdivergence(true_dist, learned_dist)
-        self.divergences[priv_type].append(kl_div)
+        learned_pop = self.learner.get_prediction()
+        kl_div = utils.joint_jsdivergence(self.population.distribution, learned_pop.distribution, self.population.probability, learned_pop.probability)
+        self.divergences[0].append(kl_div)
             
     def run_cost_constraint(self):
         budget = self.constraint_val
