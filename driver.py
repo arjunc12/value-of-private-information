@@ -80,37 +80,47 @@ class Driver(object):
         spent = 0.0
         individuals_seen = 0
 
+        count = [0 for i in range(self.population.num_types)]
         while spent < budget:
             # sample an individual from the population
             (priv_type, cost) = self.population.sample()
+            count[priv_type] += 1
 
             accepted, rejected_offer, accepted_offer = self.offer_process(cost)
             if accepted:
+                print "Offer #" + str(i) + ":\t" + str(rejected_offer) + " Rejected\t" + str(accepted_offer) + " Accepted"
                 spent += accepted_offer
                 ret_type = priv_type
             else:
+                print "Offer #" + str(i) + ":\t" + str(rejected_offer) + " Rejected"
                 ret_type = OFFER_REJECTED
 
             self.learner.update(ret_type, rejected_offer, accepted_offer)
             individuals_seen += 1
+        print "count: " + str(count)
 
         return (self.learner.get_prediction(), spent, individuals_seen)
 
     def run_steps_constraint(self):
         steps = self.constraint_val
         spent = 0.0
+        count = [0 for i in range(self.population.num_types)]
 
         for i in xrange(steps):
             # sample an individual from the population
             (priv_type, cost) = self.population.sample()
+            count[priv_type] += 1
 
             accepted, rejected_offer, accepted_offer = self.offer_process(cost)
             if accepted:
+                print "Offer #" + str(i) + ":\t" + str(rejected_offer) + " Rejected\t" + str(accepted_offer) + " Accepted"
                 spent += accepted_offer
                 ret_type = priv_type
             else:
+                print "Offer #" + str(i) + ":\t" + str(rejected_offer) + " Rejected"
                 ret_type = OFFER_REJECTED
 
             self.learner.update(ret_type, rejected_offer, accepted_offer)
 
+        print "count: " + str(count)
         return (self.learner.get_prediction(), spent, steps)
