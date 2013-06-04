@@ -32,9 +32,6 @@ class NPLearner(Learner):
         self.num_types = num_types
         self.count = [1.0 for i in range(num_types)]
         self.distribution = [NPDistribution() for i in range(num_types)]
-        for i in range(num_types):
-            self.distribution[i].update(4, 1)
-            self.distribution[i].update(6, 1)
         self.priv_type = []
         self.offer = []
 
@@ -64,11 +61,14 @@ class NPLearner(Learner):
     def update_reject(self, offer):
         weights = [self.count[i] * self.distribution[i].cdf(offer, self.max_cost)
                    for i in xrange(len(self.distribution))]
-        overall_sum = (float)(sum(weights))
+
+        overall_sum = float(sum(weights))
+
         for i in xrange(len(self.distribution)):
-            self.distribution[i].update(self.distribution[i].sample(offer, self.max_cost),
-                                        weights[i] / overall_sum)
-            self.count[i] += weights[i] / overall_sum
+            if len(self.distribution[i]) != 0:
+                sample = self.distribution[i].sample(offer, self.max_cost)
+                self.distribution[i].update(sample, weights[i] / overall_sum)
+                self.count[i] += weights[i] / overall_sum
 
 
     """
@@ -86,10 +86,7 @@ class NPLearner(Learner):
     def update_accept(self, priv_type, rejected_offer, accepted_offer):
         self.count[priv_type] += 1
         dist = self.distribution[priv_type]
-        if len(dist) != 0:
-            dist.update(dist.sample(self.min_cost, accepted_offer), 1.0)
-        else:
-            dist.update(accepted_offer, 1.0)
+        dist.update(dist.sample(self.min_cost, accepted_offer), 1.0)
 
     """
     Returns the predicted population.

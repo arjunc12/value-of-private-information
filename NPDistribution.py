@@ -7,13 +7,15 @@ from scipy.stats import gaussian_kde
 from distribution import Distribution
 
 # zomg so arbitrary
-OFFSET = 10
+OFFSET = 3
+
+PRIOR = gaussian_kde([4, 6])
 
 class NPDistribution(Distribution):
     def __init__(self):
         self.definite_points = []
         self.possible_points = []
-        self.distribution = None
+        self.distribution = PRIOR
 
     def __len__(self):
         return len(self.definite_points)
@@ -63,7 +65,7 @@ class NPDistribution(Distribution):
         if points.size > 1:
             self.distribution = gaussian_kde(points)
         else:
-            # THIS IS AN UGLY HACK
+            # THIS IS AN UGLY HACK, need 2 pts initially
             points = np.array([points[0] - OFFSET, points[0] + OFFSET])
             # bw_method?
             self.distribution = gaussian_kde(points)
