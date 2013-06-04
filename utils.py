@@ -16,4 +16,4 @@ def kldivergence(d1, d2):
 
         return math.log(pdf1 / pdf2) * pdf1
 
-    return quad(klfunc, -numpy.inf, numpy.inf)
+    return quad(klfunc, -numpy.inf, numpy.inf)[0]

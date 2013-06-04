@@ -3,6 +3,7 @@ import sys
 import os
 from datetime import datetime
 import pickle
+import matplotlib.pyplot as plt
 
 from basic_learner import BasicLearner
 from np_learner import NPLearner
@@ -66,5 +67,12 @@ def main():
     print("total_payout: " + str(payout))
     print("accepted: " + str(accepted) + " / " + str(individuals))
 
+def plot_divergences(type, divergences):
+    plt.plot(divergences)
+    plt.title("kl divergence for " + str(type) + " over time")
+    plt.xlabel("number of iterations")
+    plt.ylabel("kl-divergence")
+    plt.show()    
+    
 if __name__ == "__main__":
     main()
