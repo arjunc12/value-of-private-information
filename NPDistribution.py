@@ -67,7 +67,6 @@ class NPDistribution(Distribution):
         else:
             # THIS IS AN UGLY HACK, need 2 pts initially
             points = np.array([points[0] - OFFSET, points[0] + OFFSET])
-            # bw_method?
             self.distribution = gaussian_kde(points)
 
     '''

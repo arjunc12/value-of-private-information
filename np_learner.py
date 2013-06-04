@@ -86,7 +86,10 @@ class NPLearner(Learner):
     def update_accept(self, priv_type, rejected_offer, accepted_offer):
         self.count[priv_type] += 1
         dist = self.distribution[priv_type]
-        dist.update(dist.sample(self.min_cost, accepted_offer), 1.0)
+        if len(dist) != 0:
+            dist.update(dist.sample(self.min_cost, accepted_offer), 1.0)
+        else:
+            dist.update(accepted_offer, 1.0)
 
     """
     Returns the predicted population.
