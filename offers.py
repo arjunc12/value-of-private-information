@@ -36,7 +36,7 @@ def most_probable_type_offer(learner):
         offer = learner.get_prediction().sample()[1]
         yield offer
     else:
-        yield random_offer(learner)
+        yield random_offer(learner).next()
 
 def least_probable_type_offer(learner):
     """
@@ -49,8 +49,9 @@ def least_probable_type_offer(learner):
             break
     if enough:
         # Find the distribution with the least cost
-        scores = [len(distr.definite_points) + sum(map(lambda x: x[1], distr.possible_points)) for
-         distr in learner.distribution]
+        scores = [len(distr.definite_points) +
+                  sum(map(lambda x: x[1], distr.possible_points))
+                  for distr in learner.distribution]
         index = scores.index(min(scores))
         max_cost = max(learner.distribution[index].definite_points)
         min_cost = min(learner.distribution[index].definite_points)
