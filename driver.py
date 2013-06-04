@@ -41,7 +41,7 @@ class Driver(object):
         self.constraint_type = constraint_type
         self.constraint_val = constraint_val
         self.learner = learner
-        self.divergences = collections.defaultdict(list)
+        self.divergences = defaultdict(list)
 
     def offer_process(self, cost):
         previous_offer = None
@@ -60,14 +60,11 @@ class Driver(object):
             raise ValueError("Unknown constraint type")
 
     def get_distribution_for_type(self, priv_type):
-        for type, dist in self.population:
-            if type == priv_type:
-                return dist
-        return None
+        return self.population.distribution[priv_type]
         
     def update_divergences(self, priv_type):
         true_dist = self.get_distribution_for_type(priv_type)
-        learned_dist = self.leaner.distribution[priv_type]
+        learned_dist = self.learner.distribution[priv_type]
         kl_div = utils.kldivergence(true_dist, learned_dist)
         self.divergences[priv_type].append(kl_div)
             
@@ -89,9 +86,9 @@ class Driver(object):
 
             self.learner.update(ret_type, rejected_offer, accepted_offer)
             individuals_seen += 1
-            self.update_divergences()
+            self.update_divergences(priv_type)
 
-        return (self.learner.get_prediction(), spent, individuals_seen)
+        return (self.learner.get_prediction(), spent, individuals_seen, self.divergences)
 
     def run_steps_constraint(self):
         steps = self.constraint_val
@@ -109,6 +106,6 @@ class Driver(object):
                 ret_type = OFFER_REJECTED
 
             self.learner.update(ret_type, rejected_offer, accepted_offer)
-            self.update_divergences()
+            self.update_divergences(priv_type)
 
-        return (self.learner.get_prediction(), spent, steps)
+        return (self.learner.get_prediction(), spent, steps, self.divergences)

@@ -47,7 +47,8 @@ def main():
     d = driver.Driver(distribution, constraint_type, constraint_val, learner)
 
     # Obtain the prediction population
-    (prediction, payout, individuals) = d.run()
+    results = d.run()
+    (prediction, payout, individuals, divergences) = results
 
     # little bit fragile
     accepted = sum(map(lambda x: len(x.definite_points), prediction.distribution))
@@ -59,13 +60,15 @@ def main():
         format = "%Y-%m-%d-%H-%M-%S"
         path = "%s_%s" % (fname, datetime.now().strftime(format))
         f = open(path, 'w')
-        pickle.dump((distribution, constraint_type, constraint_val, learner, prediction, payout, individuals), f)
+        pickle.dump( result + (prediction, payout, individuals), f)
 
     # Output information about the test
     print("population:\n" + str(d.population))
     print("prediction:\n" + str(prediction))
     print("total_payout: " + str(payout))
     print("accepted: " + str(accepted) + " / " + str(individuals))
+    for type, div in divergences.iteritems():
+        plot_divergences(type, div)
 
 def plot_divergences(type, divergences):
     plt.plot(divergences)
