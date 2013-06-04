@@ -51,3 +51,34 @@ def jsdivergence(d1, d2):
 
     return (quad(klfunc1, -numpy.inf, numpy.inf)[0] + quad(klfunc2, -numpy.inf, numpy.inf)[0]) / 2
 
+def joint_jsdivergence(dist1, dist2, prob1, prob2):
+    """
+    takes two Distribution objects and computes js-divergence
+    """
+    def klfunc(x):
+        pdf1 = p1 * d1.pdf(x)
+        pdf2 = p2 * d2.pdf(x)
+        m = (pdf1 + pdf2) / 2
+
+        # should definitely be 0 if pdf1 = 0
+        # not sure how to handle case of pdf2 = 0 - for now returning 0
+        epsilon = 0.00001
+        if pdf1 < epsilon:
+            return 0
+
+        return math.log(pdf1 / m) * pdf1
+
+    ans = 0.0
+    for i in xrange(len(dist1)):
+        d1 = dist1[i]
+        d2 = dist2[i]
+        p1 = prob1[i]
+        p2 = prob2[i]
+        ans += quad(klfunc, -numpy.inf, numpy.inf)[0] / 2
+
+        d1 = dist2[i]
+        d2 = dist1[i]
+        p1 = prob2[i]
+        p2 = prob1[i]
+        ans += quad(klfunc, -numpy.inf, numpy.inf)[0] / 2
+    return ans
