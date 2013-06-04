@@ -12,7 +12,7 @@ def kldivergence(d1, d2):
         # should definitely be 0 if pdf1 = 0
         # not sure how to handle case of pdf2 = 0 - for now returning 0
         epsilon = 0.00001
-        if pdf1 < epsilon and pdf2 < epsilon:
+        if pdf1 < epsilon:
             return 0
 
         return math.log(pdf1 / pdf2) * pdf1
