@@ -17,7 +17,7 @@ def kldivergence(d1, d2):
 
         return math.log(pdf1 / pdf2) * pdf1
 
-    return quad(klfunc, -numpy.inf, numpy.inf)
+    return quad(klfunc, -numpy.inf, numpy.inf)[0]
 
 def jsdivergence(d1, d2):
     """
@@ -50,3 +50,4 @@ def jsdivergence(d1, d2):
         return math.log(pdf2 / m) * pdf2
 
     return (quad(klfunc1, -numpy.inf, numpy.inf)[0] + quad(klfunc2, -numpy.inf, numpy.inf)[0]) / 2
+

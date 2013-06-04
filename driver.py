@@ -1,6 +1,7 @@
 from learner import OFFER_REJECTED
 from population import Population
 import utils
+from collections import defaultdict
 
 COST = 0
 STEPS = 1
@@ -40,6 +41,8 @@ class Driver(object):
         self.constraint_type = constraint_type
         self.constraint_val = constraint_val
         self.learner = learner
+        # dic mapping each type to the list of kl divergences over time
+        self.divergences = defaultdict(list)
 
     '''
     This function allows us to interactively haggle with someone's data that
@@ -74,7 +77,16 @@ class Driver(object):
             return self.run_steps_constraint()
         else:
             raise ValueError("Unknown constraint type")
-
+        
+    def get_distribution_for_type(self, priv_type):
+        return self.population.distribution[priv_type]
+        
+    def update_divergences(self, priv_type):
+        true_dist = self.get_distribution_for_type(priv_type)
+        learned_dist = self.learner.distribution[priv_type]
+        kl_div = utils.kldivergence(true_dist, learned_dist)
+        self.divergences[priv_type].append(kl_div)
+            
     def run_cost_constraint(self):
         budget = self.constraint_val
         spent = 0.0
@@ -97,9 +109,10 @@ class Driver(object):
 
             self.learner.update(ret_type, rejected_offer, accepted_offer)
             individuals_seen += 1
-        print "count: " + str(count)
+            # compute new kl-divergence
+            self.update_divergences(priv_type)
 
-        return (self.learner.get_prediction(), spent, individuals_seen)
+        return (self.learner.get_prediction(), spent, individuals_seen, self.divergences)
 
     def run_steps_constraint(self):
         steps = self.constraint_val
@@ -121,6 +134,6 @@ class Driver(object):
                 ret_type = OFFER_REJECTED
 
             self.learner.update(ret_type, rejected_offer, accepted_offer)
-
-        print "count: " + str(count)
-        return (self.learner.get_prediction(), spent, steps)
+            # compute new kl-divergence
+            self.update_divergences(priv_type)
+        return (self.learner.get_prediction(), spent, steps, self.divergences)
