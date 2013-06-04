@@ -7,6 +7,12 @@ def random_offer(learner):
     """
     yield random.uniform(learner.min_cost, learner.max_cost)
 
+def max_offer(learner):
+    """
+    Returns the maximum offer repeatedly.
+    """
+    yield learner.max_cost
+
 def uniform_type_offer(learner):
     """
     Returns an offer designed to uniformly sample the population
