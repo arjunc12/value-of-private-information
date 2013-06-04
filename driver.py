@@ -77,22 +77,7 @@ class Driver(object):
             return self.run_steps_constraint()
         else:
             raise ValueError("Unknown constraint type")
-            
-    def get_dist_for_type(self, priv_type):
-        """
-        gets the cost distribution associated with type priv_type
-        """
-        for type, dist in self.population:
-            if type == priv_type:
-                return dist
-                
-        return None
         
-    def update_divergences(self, priv_type):
-        learner_dist = self.learner.distribution
-        real_dist = self.get_dist_for_type(priv_type)
-        self.divergences[type] = utils.kldivergence(real_dist, learner_dist)
-
     def get_distribution_for_type(self, priv_type):
         return self.population.distribution[priv_type]
         
