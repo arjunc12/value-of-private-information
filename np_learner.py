@@ -65,10 +65,9 @@ class NPLearner(Learner):
         overall_sum = float(sum(weights))
 
         for i in xrange(len(self.distribution)):
-            if len(self.distribution[i]) != 0:
-                sample = self.distribution[i].sample(offer, self.max_cost)
-                self.distribution[i].update(sample, weights[i] / overall_sum)
-                self.count[i] += weights[i] / overall_sum
+            sample = self.distribution[i].sample(offer, self.max_cost)
+            self.distribution[i].update(sample, weights[i] / overall_sum)
+            self.count[i] += weights[i] / overall_sum
 
 
     """
@@ -86,10 +85,7 @@ class NPLearner(Learner):
     def update_accept(self, priv_type, rejected_offer, accepted_offer):
         self.count[priv_type] += 1
         dist = self.distribution[priv_type]
-        if len(dist) != 0:
-            dist.update(dist.sample(self.min_cost, accepted_offer), 1.0)
-        else:
-            dist.update(accepted_offer, 1.0)
+        dist.update(dist.sample(self.min_cost, accepted_offer), 1.0)
 
     """
     Returns the predicted population.

@@ -47,6 +47,10 @@ class NPDistribution(Distribution):
         else:
             self.possible_points.append((mu, weight))
 
+        # just keep the PRIOR distribution
+        if self.definite_points == []:
+            return
+
         if self.possible_points != []:
             # turn into an array for numpy's purposes
             a = np.array(self.possible_points)
