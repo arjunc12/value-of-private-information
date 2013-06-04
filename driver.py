@@ -84,7 +84,7 @@ class Driver(object):
     def update_divergences(self, priv_type):
         true_dist = self.get_distribution_for_type(priv_type)
         learned_dist = self.learner.distribution[priv_type]
-        kl_div = utils.kldivergence(true_dist, learned_dist)
+        kl_div = utils.jsdivergence(true_dist, learned_dist)
         self.divergences[priv_type].append(kl_div)
             
     def run_cost_constraint(self):
