@@ -2,6 +2,7 @@ from population import *
 from learner import *
 from NPDistribution import *
 import random
+from types import MethodType
 
 """
 This class describes a non-parametric distribution learning mechanism.
@@ -22,6 +23,8 @@ class NPLearner(Learner):
     max_cost: maximum cost over all private types
 
     min_cost: minimum cost over all private types
+
+    offer_strategy: A valid generator function that generates values greater than 0
     """
     def __init__(self, num_types, offer_strategy, max_cost, min_cost=0):
         self.min_cost = min_cost
@@ -29,12 +32,10 @@ class NPLearner(Learner):
         self.num_types = num_types
         self.count = [1.0 for i in range(num_types)]
         self.distribution = [NPDistribution() for i in range(num_types)]
-        for i in range(num_types):
-            self.distribution[i].update(4, 1)
-            self.distribution[i].update(6, 1)
         self.priv_type = []
         self.offer = []
-        self.offer_strategy = offer_strategy
+
+        self.make_offer = MethodType(offer_strategy, self)
 
 
     """
@@ -60,10 +61,12 @@ class NPLearner(Learner):
     def update_reject(self, offer):
         weights = [self.count[i] * self.distribution[i].cdf(offer, self.max_cost)
                    for i in xrange(len(self.distribution))]
-        overall_sum = (float)(sum(weights))
+
+        overall_sum = float(sum(weights))
+
         for i in xrange(len(self.distribution)):
-            self.distribution[i].update(self.distribution[i].sample(offer, self.max_cost),
-                                        weights[i] / overall_sum)
+            sample = self.distribution[i].sample(offer, self.max_cost)
+            self.distribution[i].update(sample, weights[i] / overall_sum)
             self.count[i] += weights[i] / overall_sum
 
 
@@ -82,19 +85,14 @@ class NPLearner(Learner):
     def update_accept(self, priv_type, rejected_offer, accepted_offer):
         self.count[priv_type] += 1
         dist = self.distribution[priv_type]
-        if len(dist) != 0:
-            dist.update(dist.sample(self.min_cost, accepted_offer), 1.0)
+
+        # minimum possible value of individual cost
+        if rejected_offer is not None:
+            min_val = rejected_offer
         else:
-            dist.update(accepted_offer, 1.0)
+            min_val = self.min_cost
 
-    """
-    This makes a random offer drawn from a uniform distrbution
-    from the minimum cost to the maximum cost.
-
-    returns: next offer to make
-    """
-    def make_offer(self):
-        yield self.offer_strategy(self)
+        dist.update(dist.sample(min_val, accepted_offer), 1.0)
 
     """
     Returns the predicted population.

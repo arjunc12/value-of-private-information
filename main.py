@@ -2,6 +2,7 @@ import random
 import sys
 import os
 from datetime import datetime
+import numpy
 import pickle
 import matplotlib.pyplot as plt
 
@@ -10,7 +11,7 @@ from np_learner import NPLearner
 import driver
 from normal_distribution import NormalDistribution
 from uniform_distribution import UniformDistribution
-from offers import *
+import offers
 
 SEED = 3129412
 
@@ -19,6 +20,7 @@ This file contains the code that runs the main experiment.
 """
 def main():
     random.seed(SEED)
+    numpy.random.seed(SEED)
 
     distribution = [
         (0.9, NormalDistribution(1, 0.5)),
@@ -30,10 +32,19 @@ def main():
 
     # Initialize a non-parametric learner
 
-    learner = NPLearner(len(distribution), uniform_type_offer, 15)
+    #learner = NPLearner(len(distribution), offers.uniform_type_offer, 15)
 
+    init_offer = lambda l: offers.most_probable_type_offer(l).next()
+    prob = lambda l: 0.5
+    increment = lambda l: 1
+    learner = NPLearner(len(distribution),
+                        offers.configure_repeated_bidder(init_offer, prob, increment),
+                        15)
+
+    # defaults
     constraint_type = driver.STEPS
     constraint_val = 1000
+
     args = sys.argv
 
     if '-c' in args:

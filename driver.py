@@ -41,8 +41,22 @@ class Driver(object):
         self.constraint_type = constraint_type
         self.constraint_val = constraint_val
         self.learner = learner
+        # dic mapping each type to the list of kl divergences over time
         self.divergences = defaultdict(list)
 
+    '''
+    This function allows us to interactively haggle with someone's data that
+    we want to buy. The 'cost' parameter is the value that the individual attaches
+    to keeping their data private.
+    The return value of this function is a 3 tuple: (accepted, rejected_offer, accepted_offer)
+
+    'accepted' is a boolean of whether or not the individual accepted an offer.
+    'rejected_offer' is the greatest value of any offer the individual rejected.
+    'accepted_offer' is the value of the offer that the user accepted.
+
+    Note that either 'accepted_offer' will be None when accepted is False, and that
+    'rejected_offer' can be None when accepted_offer is True (if they accepted the first offer).
+    '''
     def offer_process(self, cost):
         previous_offer = None
         for offer in self.learner.make_offer():
@@ -51,6 +65,11 @@ class Driver(object):
             previous_offer = offer
         return (False, previous_offer, None)
 
+    '''
+    The main function of this class. Returns a 3-tuple: (distribution, spent, individuals_seen)
+    'distribution' is a population object representing what we learned about each type.
+    'spent' is how much money we paid out, 'individuals_seen' is how many individuals we talked to.
+    '''
     def run(self):
         if self.constraint_type == COST:
             return self.run_cost_constraint()
@@ -58,6 +77,21 @@ class Driver(object):
             return self.run_steps_constraint()
         else:
             raise ValueError("Unknown constraint type")
+            
+    def get_dist_for_type(self, priv_type):
+        """
+        gets the cost distribution associated with type priv_type
+        """
+        for type, dist in self.population:
+            if type == priv_type:
+                return dist
+                
+        return None
+        
+    def update_divergences(self, priv_type):
+        learner_dist = self.learner.distribution
+        real_dist = self.get_dist_for_type(priv_type)
+        self.divergences[type] = utils.kldivergence(real_dist, learner_dist)
 
     def get_distribution_for_type(self, priv_type):
         return self.population.distribution[priv_type]
@@ -86,6 +120,7 @@ class Driver(object):
 
             self.learner.update(ret_type, rejected_offer, accepted_offer)
             individuals_seen += 1
+            # compute new kl-divergence
             self.update_divergences(priv_type)
 
         return (self.learner.get_prediction(), spent, individuals_seen, self.divergences)
@@ -106,6 +141,7 @@ class Driver(object):
                 ret_type = OFFER_REJECTED
 
             self.learner.update(ret_type, rejected_offer, accepted_offer)
+            # compute new kl-divergence
             self.update_divergences(priv_type)
 
         return (self.learner.get_prediction(), spent, steps, self.divergences)
