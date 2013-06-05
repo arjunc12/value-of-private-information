@@ -1,6 +1,7 @@
 from scipy.integrate import quad
 import numpy
 import math
+import matplotlib.pyplot as plt
 
 def kldivergence(d1, d2):
     """
@@ -82,3 +83,9 @@ def joint_jsdivergence(dist1, dist2, prob1, prob2):
         p2 = prob1[i]
         ans += quad(klfunc, -numpy.inf, numpy.inf)[0] / 2
     return ans
+
+def plot_distribution(dist, leftend=-10, rightend=10, step=0.2):
+    x = numpy.arange(leftend, rightend, step)
+    y = map(dist.pdf, x)
+    plt.plot(x, y)
+    plt.show()
