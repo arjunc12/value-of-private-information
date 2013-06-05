@@ -54,6 +54,10 @@ def main():
     elif '-s' in args:
         i = args.index('-s')
         constraint_val = int(args[i + 1])
+    elif '-b' in args:
+        constraint_type = driver.BASELINE
+        i = args.index('-b')
+        constraint_val = int(args[i + 1])
 
     d = driver.Driver(distribution, constraint_type, constraint_val, learner)
 
@@ -78,16 +82,15 @@ def main():
     print("prediction:\n" + str(prediction))
     print("total_payout: " + str(payout))
     print("accepted: " + str(accepted) + " / " + str(individuals))
-    for type, div in divergences.iteritems():
-        plot_divergences(type, div)
+    plot_divergences(divergences)
 
-def plot_divergences(type, divergences):
+def plot_divergences(divergences):
     plt.plot(divergences)
-    plt.title("js divergence for type " + str(type) + " over time")
+    plt.title("js divergence over time")
     plt.xlabel("number of iterations")
     plt.ylabel("js-divergence")
     plt.ylim((0, 1))
-    plt.show()    
-    
+    plt.show()
+
 if __name__ == "__main__":
     main()
