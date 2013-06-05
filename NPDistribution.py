@@ -15,7 +15,7 @@ class NPDistribution(Distribution):
     def __init__(self):
         self.definite_points = []
         self.possible_points = []
-        self.distribution = PRIOR
+        self.distribution = None
 
     def __len__(self):
         return len(self.definite_points)
@@ -24,14 +24,26 @@ class NPDistribution(Distribution):
     Returns the probability mass under x
     '''
     def pdf(self, x):
+        if (self.distribution == None):
+            if (0 <= x <= 15):
+                return 1.0 / 15
+            return 0
         return self.distribution([x])[0]
 
     '''
     Returns the probability mass between values a and b, a < b
     '''
     def cdf(self, a, b=None):
+        if (self.distribution == None):
+            a = max(a, 0)
+            if (b != None):
+                b = min(b, 15)
+                return (b - a) / 15.0
+            return a / 15.0
         if (b != None):
             return self.distribution.integrate_box_1d(a, b)
+        #print "a: " + str(a)
+        #print "integral: " + str(self.distribution.integrate_box_1d(0, a))
         return self.distribution.integrate_box_1d(0, a)
 
     '''
@@ -67,17 +79,24 @@ class NPDistribution(Distribution):
             points = np.array(self.definite_points)
 
         if points.size > 1:
+            #print "points: " + str(points)
             self.distribution = gaussian_kde(points)
         else:
             # THIS IS AN UGLY HACK, need 2 pts initially
             points = np.array([points[0] - OFFSET, points[0] + OFFSET])
             self.distribution = gaussian_kde(points)
+            self.distribution = None
 
     '''
     Samples a point from this distribution between values a and b.
     '''
     def sample(self, a=0, b=100):
         assert a <= b
+
+        if (self.distribution == None):
+            a = max(0, a)
+            b = min(15, b)
+            return random.random() * (b - a) + a
 
         lin = np.linspace(a, b, 1000)
 
