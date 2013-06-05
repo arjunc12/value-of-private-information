@@ -83,9 +83,10 @@ def main():
 
 def plot_divergences(type, divergences):
     plt.plot(divergences)
-    plt.title("kl divergence for " + str(type) + " over time")
+    plt.title("js divergence for type " + str(type) + " over time")
     plt.xlabel("number of iterations")
-    plt.ylabel("kl-divergence")
+    plt.ylabel("js-divergence")
+    plt.ylim((0, 1))
     plt.show()    
     
 if __name__ == "__main__":
