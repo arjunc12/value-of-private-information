@@ -25,8 +25,9 @@ def main():
     numpy.random.seed(SEED)
 
     distribution = [
-        (0.9, NormalDistribution(1, 0.5)),
-        (0.1, UniformDistribution(9, 10))
+        (0.9, NormalDistribution(2, 1)),
+        #(0.1, NormalDistribution(7, 1))
+        (0.1, UniformDistribution(6.5, 7.5))
     ]
 
     ## Initialize a basic learner
