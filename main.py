@@ -63,7 +63,12 @@ def main():
 
     # Obtain the prediction population
     results = d.run()
-    (prediction, payout, individuals, divergences) = results
+    prediction = results["prediction"]
+    payout = results["spent"]
+    individuals = results["individuals_seen"]
+    divergences = results["divergences"]
+    costs = results["costs"]
+    #(prediction, payout, individuals, divergences) = results
 
     # little bit fragile
     accepted = sum(map(lambda x: len(x.definite_points), prediction.distribution))
@@ -75,7 +80,7 @@ def main():
         format = "%Y-%m-%d-%H-%M-%S"
         path = "%s_%s" % (fname, datetime.now().strftime(format))
         f = open(path, 'w')
-        pickle.dump( result + (prediction, payout, individuals), f)
+        pickle.dump(results, f)
 
     # Output information about the test
     print("population:\n" + str(d.population))
@@ -83,6 +88,7 @@ def main():
     print("total_payout: " + str(payout))
     print("accepted: " + str(accepted) + " / " + str(individuals))
     plot_divergences(divergences)
+    plot_costs(costs)
 
 def plot_divergences(divergences):
     plt.plot(divergences)
@@ -90,6 +96,13 @@ def plot_divergences(divergences):
     plt.xlabel("number of iterations")
     plt.ylabel("js-divergence")
     plt.ylim((0, 1))
+    plt.show()
+    
+def plot_costs(costs):
+    plt.plot(costs)
+    plt.title("cumulative cost over time")
+    plt.xlabel("number of individuals seen")
+    plt.ylabel("cumulative cost")
     plt.show()
 
 if __name__ == "__main__":

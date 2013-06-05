@@ -44,8 +44,19 @@ class Driver(object):
         self.constraint_val = constraint_val
         self.learner = learner
         # dic mapping each type to the list of kl divergences over time
-        self.costs = []
+        self.costs = [0]
         self.divergences = []
+        
+        # dictionary that will contain everything we want to return at the end
+        # if you have a new thing you want to return, just add it to the 
+        # dictionary instead of changing the tuple size
+        self.results = {}
+        self.results["population"] = self.population
+        self.results["constraint_type"] = self.constraint_type
+        self.results["constraint_val"] = self.constraint_val
+        self.results["learner"] = self.learner
+        self.results["costs"] = self.costs
+        self.results["divergences"] = self.divergences
 
     '''
     This function allows us to interactively haggle with someone's data that
@@ -121,7 +132,11 @@ class Driver(object):
             learned_pop = self.learner.get_prediction()
             self.update_divergences(learned_pop)
 
-        return (self.learner.get_prediction(), spent, individuals_seen, self.divergences)
+        #return (self.learner.get_prediction(), spent, individuals_seen, self.divergences)
+        self.results["prediction"] = self.learner.get_prediction()
+        self.results["spent"] = spent
+        self.results["individuals_seen"] = individuals_seen
+        return self.results
 
     def run_steps_constraint(self):
         steps = self.constraint_val
@@ -149,7 +164,11 @@ class Driver(object):
             learned_pop = self.learner.get_prediction()
             self.update_divergences(learned_pop)
 
-        return (self.learner.get_prediction(), spent, steps, self.divergences)
+        #return (self.learner.get_prediction(), spent, steps, self.divergences)
+        self.results["prediction"] = self.learner.get_prediction()
+        self.results["spent"] = spent
+        self.results["individuals_seen"] = steps
+        return self.results
 
     def run_baseline(self):
         steps = self.constraint_val
