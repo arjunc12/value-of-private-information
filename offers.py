@@ -7,6 +7,9 @@ def random_offer(learner):
     """
     yield random.uniform(learner.min_cost, learner.max_cost)
 
+def offer_5(learner):
+    yield 5.0
+
 def max_offer(learner):
     """
     Returns the maximum offer repeatedly.

@@ -45,6 +45,8 @@ def main():
             offer = offers.most_probable_type_offer
         elif (offer_type == "least"):
             offer = offers.least_probable_type_offer
+        elif (offer_type == "5"):
+            offer = offers.offer_5
         else:
             print "Offer strategy " + offer_type + " is not implemented."
             return
