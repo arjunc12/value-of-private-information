@@ -3,7 +3,7 @@ import sys
 import os
 from datetime import datetime
 import numpy
-import pickle
+import cPickle as pickle
 import matplotlib.pyplot as plt
 
 from basic_learner import BasicLearner
@@ -14,6 +14,7 @@ from uniform_distribution import UniformDistribution
 import offers
 
 SEED = 3129412
+MAX_OFFER = 15 # feel free to change this
 
 """
 This file contains the code that runs the main experiment.
@@ -80,7 +81,7 @@ def main():
         format = "%Y-%m-%d-%H-%M-%S"
         path = "%s_%s" % (fname, datetime.now().strftime(format))
         f = open(path, 'w')
-        pickle.dump(results, f)
+        pickle.dump((prediction, payout, individuals, divergences, costs), f)
 
     # Output information about the test
     print("population:\n" + str(d.population))
@@ -99,7 +100,9 @@ def plot_divergences(divergences):
     plt.show()
     
 def plot_costs(costs):
-    plt.plot(costs)
+    p1 = plt.plot(costs, label="learned costs")
+    p2 = plt.plot(map(lambda x : x * 15, range(len(costs) + 1)), label="max cost")
+    plt.legend()
     plt.title("cumulative cost over time")
     plt.xlabel("number of individuals seen")
     plt.ylabel("cumulative cost")
