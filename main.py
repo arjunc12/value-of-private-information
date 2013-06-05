@@ -39,7 +39,7 @@ def main():
         if (offer_type == "random"):
             offer = offers.random_offer
         elif (offer_type == "max"):
-            offer = offers.max_cost
+            offer = offers.max_offer
         elif (offer_type == "uniform"):
             offer = offers.uniform_type_offer
         elif (offer_type == "most"):
