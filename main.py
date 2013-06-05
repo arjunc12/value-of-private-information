@@ -11,6 +11,7 @@ from np_learner import NPLearner
 import driver
 from normal_distribution import NormalDistribution
 from uniform_distribution import UniformDistribution
+from utils import *
 import offers
 
 SEED = 3129412
@@ -33,14 +34,14 @@ def main():
 
     # Initialize a non-parametric learner
 
-    #learner = NPLearner(len(distribution), offers.uniform_type_offer, 15)
+    #learner = NPLearner(len(distribution), offers.uniform_type_offer, MAX_OFFER)
 
     init_offer = lambda l: offers.most_probable_type_offer(l).next()
     prob = lambda l: 0.5
     increment = lambda l: 1
     learner = NPLearner(len(distribution),
                         offers.configure_repeated_bidder(init_offer, prob, increment),
-                        15)
+                        MAX_OFFER)
 
     # defaults
     constraint_type = driver.STEPS
@@ -88,8 +89,14 @@ def main():
     print("prediction:\n" + str(prediction))
     print("total_payout: " + str(payout))
     print("accepted: " + str(accepted) + " / " + str(individuals))
+
+    print joint_jsdivergence(d.population.distribution, prediction.distribution, d.population.probability, prediction.probability)
     plot_divergences(divergences)
     plot_costs(costs)
+
+    for dist in prediction.distribution:
+        plot_distribution(dist)
+
 
 def plot_divergences(divergences):
     plt.plot(divergences)
@@ -98,10 +105,10 @@ def plot_divergences(divergences):
     plt.ylabel("js-divergence")
     plt.ylim((0, 1))
     plt.show()
-    
+
 def plot_costs(costs):
     p1 = plt.plot(costs, label="learned costs")
-    p2 = plt.plot(map(lambda x : x * 15, range(len(costs) + 1)), label="max cost")
+    p2 = plt.plot(map(lambda x : x * MAX_OFFER, range(len(costs) + 1)), label="max cost")
     plt.legend()
     plt.title("cumulative cost over time")
     plt.xlabel("number of individuals seen")

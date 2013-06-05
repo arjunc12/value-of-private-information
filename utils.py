@@ -56,6 +56,11 @@ def joint_jsdivergence(dist1, dist2, prob1, prob2):
     """
     takes two Distribution objects and computes js-divergence
     """
+    print dist1
+    print dist2
+    print prob1
+    print prob2
+    print
     def klfunc(x):
         pdf1 = p1 * d1.pdf(x)
         pdf2 = p2 * d2.pdf(x)
@@ -67,7 +72,7 @@ def joint_jsdivergence(dist1, dist2, prob1, prob2):
         if pdf1 < epsilon:
             return 0
 
-        return math.log(pdf1 / m) * pdf1
+        return math.log(pdf1 / m) * pdf1 / math.log(2)
 
     ans = 0.0
     for i in xrange(len(dist1)):
