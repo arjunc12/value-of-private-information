@@ -46,9 +46,9 @@ class Driver(object):
         # dic mapping each type to the list of kl divergences over time
         self.costs = [0]
         self.divergences = []
-        
+
         # dictionary that will contain everything we want to return at the end
-        # if you have a new thing you want to return, just add it to the 
+        # if you have a new thing you want to return, just add it to the
         # dictionary instead of changing the tuple size
         self.results = {}
         self.results["population"] = self.population
@@ -96,10 +96,10 @@ class Driver(object):
 
     def get_distribution_for_type(self, priv_type):
         return self.population.distribution[priv_type]
-        
+
     def update_costs(self, cost):
         self.costs.append(cost)
-            
+
 
     def update_divergences(self, learned_pop):
         js_div = utils.joint_jsdivergence(self.population.distribution, learned_pop.distribution, self.population.probability, learned_pop.probability)
@@ -127,7 +127,7 @@ class Driver(object):
 
             self.learner.update(ret_type, rejected_offer, accepted_offer)
             individuals_seen += 1
-            
+
             self.update_costs(spent)
             learned_pop = self.learner.get_prediction()
             self.update_divergences(learned_pop)
@@ -160,7 +160,7 @@ class Driver(object):
             self.learner.update(ret_type, rejected_offer, accepted_offer)
             # compute new kl-divergence
             self.update_costs(spent)
-            
+
             learned_pop = self.learner.get_prediction()
             self.update_divergences(learned_pop)
 
@@ -182,12 +182,18 @@ class Driver(object):
             (priv_type, cost) = self.population.sample()
             count[priv_type] += 1
             distribution[priv_type].update(cost, 1)
+            spent += cost
 
+            self.update_costs(spent)
             # compute new kl-divergence
             prob = [None for j in xrange(self.population.num_types)]
             for j in xrange(self.population.num_types):
-                prob[j] = count[j] / sum(count)
+                prob[j] = count[j] / float(sum(count))
 
             learned_pop = Population(prob, distribution)
             self.update_divergences(learned_pop)
-        return (learned_pop, spent, steps, self.divergences)
+        #return (learned_pop, spent, steps, self.divergences)
+        self.results["prediction"] = learned_pop
+        self.results["spent"] = spent
+        self.results["individuals_seen"] = steps
+        return self.results
