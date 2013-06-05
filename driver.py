@@ -43,6 +43,7 @@ class Driver(object):
         self.learner = learner
         # dic mapping each type to the list of kl divergences over time
         self.divergences = defaultdict(list)
+        self.costs = []
 
     '''
     This function allows us to interactively haggle with someone's data that
@@ -87,6 +88,9 @@ class Driver(object):
         learned_pop = self.learner.get_prediction()
         kl_div = utils.joint_jsdivergence(self.population.distribution, learned_pop.distribution, self.population.probability, learned_pop.probability)
         self.divergences[priv_type].append(kl_div)
+        
+    def update_costs(self, cost):
+        self.costs.append(cost)
             
     def run_cost_constraint(self):
         budget = self.constraint_val
@@ -112,6 +116,7 @@ class Driver(object):
             individuals_seen += 1
             # compute new kl-divergence
             self.update_divergences(priv_type)
+            self.update_costs(spent)
 
         return (self.learner.get_prediction(), spent, individuals_seen, self.divergences)
 
@@ -137,4 +142,6 @@ class Driver(object):
             self.learner.update(ret_type, rejected_offer, accepted_offer)
             # compute new kl-divergence
             self.update_divergences(priv_type)
+            self.update_costs(spent)
+            
         return (self.learner.get_prediction(), spent, steps, self.divergences)
