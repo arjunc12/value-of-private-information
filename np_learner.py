@@ -101,3 +101,6 @@ class NPLearner(Learner):
         norm = sum(self.count)
         probability = [self.count[i] / norm for i in xrange(len(self.count))]
         return Population(probability, self.distribution)
+        
+    def __str__(self):
+        return "np_learner"

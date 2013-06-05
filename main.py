@@ -79,7 +79,7 @@ def main():
             os.makedirs('data')
         fname = "data/run"
         format = "%Y-%m-%d-%H-%M-%S"
-        path = "%s_%s" % (fname, datetime.now().strftime(format))
+        path = "%s_%s_%s" % (fname, datetime.now().strftime(format), str(learner))
         f = open(path, 'w')
         pickle.dump((prediction, payout, individuals, divergences, costs), f)
 

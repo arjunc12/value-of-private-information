@@ -33,3 +33,6 @@ class Learner(object):
     """
     def get_prediction(self):
         raise NotImplementedError()
+        
+    def __str__(self):
+        return "learner"
