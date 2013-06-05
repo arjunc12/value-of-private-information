@@ -30,12 +30,32 @@ def main():
         (0.1, UniformDistribution(6.5, 7.5))
     ]
 
+    args = sys.argv
+    offer = offers.uniform_type_offer
+    if '-offer' in args:
+        i = args.index('-offer')
+        offer_type = args[i + 1]
+
+        if (offer_type == "random"):
+            offer = offers.random_offer
+        elif (offer_type == "max"):
+            offer = offers.max_cost
+        elif (offer_type == "uniform"):
+            offer = offers.uniform_type_offer
+        elif (offer_type == "most"):
+            offer = offers.most_probable_type_offer
+        elif (offer_type == "least"):
+            offer = offers.least_probable_type_offer
+        else:
+            print "Offer strategy " + offer_type + " is not implemented."
+            return
+
     ## Initialize a basic learner
     #learner = BasicLearner(len(distribution))
 
     # Initialize a non-parametric learner
 
-    #learner = NPLearner(len(distribution), offers.uniform_type_offer, MAX_OFFER)
+    learner = NPLearner(len(distribution), offer, MAX_OFFER)
 
     init_offer = lambda l: offers.most_probable_type_offer(l).next()
     prob = lambda l: 0.5
@@ -48,7 +68,6 @@ def main():
     constraint_type = driver.STEPS
     constraint_val = 1000
 
-    args = sys.argv
 
     if '-c' in args:
         constraint_type = driver.COST
@@ -81,7 +100,7 @@ def main():
             os.makedirs('data')
         fname = "data/run"
         format = "%Y-%m-%d-%H-%M-%S"
-        path = "%s_%s_%s" % (fname, datetime.now().strftime(format), str(learner))
+        path = "%s_%s_%s" % (fname, datetime.now().strftime(format), offer_type)
         f = open(path, 'w')
         pickle.dump((prediction, payout, individuals, divergences, costs), f)
 
