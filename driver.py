@@ -2,9 +2,11 @@ from learner import OFFER_REJECTED
 from population import Population
 import utils
 from collections import defaultdict
+from NPDistribution import *
 
 COST = 0
 STEPS = 1
+BASELINE = 2
 
 class Driver(object):
     '''
@@ -42,8 +44,8 @@ class Driver(object):
         self.constraint_val = constraint_val
         self.learner = learner
         # dic mapping each type to the list of kl divergences over time
-        self.divergences = defaultdict(list)
         self.costs = []
+        self.divergences = []
 
     '''
     This function allows us to interactively haggle with someone's data that
@@ -76,22 +78,22 @@ class Driver(object):
             return self.run_cost_constraint()
         elif self.constraint_type == STEPS:
             return self.run_steps_constraint()
+        elif self.constraint_type == BASELINE:
+            return self.run_baseline()
         else:
             raise ValueError("Unknown constraint type")
-        
+
     def get_distribution_for_type(self, priv_type):
         return self.population.distribution[priv_type]
-        
-    def update_divergences(self, priv_type):
-        true_dist = self.get_distribution_for_type(priv_type)
-        learned_dist = self.learner.distribution[priv_type]
-        learned_pop = self.learner.get_prediction()
-        kl_div = utils.joint_jsdivergence(self.population.distribution, learned_pop.distribution, self.population.probability, learned_pop.probability)
-        self.divergences[priv_type].append(kl_div)
         
     def update_costs(self, cost):
         self.costs.append(cost)
             
+
+    def update_divergences(self, learned_pop):
+        js_div = utils.joint_jsdivergence(self.population.distribution, learned_pop.distribution, self.population.probability, learned_pop.probability)
+        self.divergences.append(js_div)
+
     def run_cost_constraint(self):
         budget = self.constraint_val
         spent = 0.0
@@ -114,9 +116,10 @@ class Driver(object):
 
             self.learner.update(ret_type, rejected_offer, accepted_offer)
             individuals_seen += 1
-            # compute new kl-divergence
-            self.update_divergences(priv_type)
+            
             self.update_costs(spent)
+            learned_pop = self.learner.get_prediction()
+            self.update_divergences(learned_pop)
 
         return (self.learner.get_prediction(), spent, individuals_seen, self.divergences)
 
@@ -141,7 +144,31 @@ class Driver(object):
 
             self.learner.update(ret_type, rejected_offer, accepted_offer)
             # compute new kl-divergence
-            self.update_divergences(priv_type)
             self.update_costs(spent)
             
+            learned_pop = self.learner.get_prediction()
+            self.update_divergences(learned_pop)
+
         return (self.learner.get_prediction(), spent, steps, self.divergences)
+
+    def run_baseline(self):
+        steps = self.constraint_val
+        spent = 0.0
+        count = [0 for i in range(self.population.num_types)]
+        distribution = [NPDistribution() for i in range(self.population.num_types)]
+
+        for i in xrange(steps):
+            print "Offer #" + str(i) + " / " + str(steps)
+            # sample an individual from the population
+            (priv_type, cost) = self.population.sample()
+            count[priv_type] += 1
+            distribution[priv_type].update(cost, 1)
+
+            # compute new kl-divergence
+            prob = [None for j in xrange(self.population.num_types)]
+            for j in xrange(self.population.num_types):
+                prob[j] = count[j] / sum(count)
+
+            learned_pop = Population(prob, distribution)
+            self.update_divergences(learned_pop)
+        return (learned_pop, spent, steps, self.divergences)
