@@ -8,13 +8,13 @@ class Distribution(object):
     """
     def sample(self):
         raise NotImplementedError()
-        
+
     def pdf(self, x):
         raise NotImplementedError()
-        
+
     def cdf(self, x):
         raise NotImplementedError()
-        
+
     def inverseCDFIter(self, p, min=0, max=0):
         """
         uses binary search to iteratively calculate inverse cdf function
@@ -24,12 +24,12 @@ class Distribution(object):
         jump = 10
         while self.cdf(min) > p:
             min -= jump
-            
-        while self.cdf(max) < p:
+
+        while self.cdf(max) < p and max < 10000:
             max += jump
-            
-        cutoff = 0.01        
-        
+
+        cutoff = 0.01
+
         while True:
             x = 0.5 * (min + max)
             c = self.cdf(x)
