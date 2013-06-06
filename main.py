@@ -58,12 +58,12 @@ def main():
 
     learner = NPLearner(len(distribution), offer, MAX_OFFER)
 
-    init_offer = lambda l: offers.most_probable_type_offer(l).next()
-    prob = lambda l: 0.5
-    increment = lambda l: 1
-    learner = NPLearner(len(distribution),
-                        offers.configure_repeated_bidder(init_offer, prob, increment),
-                        MAX_OFFER)
+    #init_offer = lambda l: offers.most_probable_type_offer(l).next()
+    #prob = lambda l: 0.5
+    #increment = lambda l: 1
+    #learner = NPLearner(len(distribution),
+    #                    offers.configure_repeated_bidder(init_offer, prob, increment),
+    #                    MAX_OFFER)
 
     # defaults
     constraint_type = driver.STEPS
